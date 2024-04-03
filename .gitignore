@@ -203,3 +203,8 @@ $RECYCLE.BIN/
 *.msi
 *.msm
 *.msp
+/StringBasedBigInt/.vs/StringBasedBigInt/v17/Browse.VC.db
+*.vsidx
+*.db-shm
+*.db-wal
+/StringBasedBigInt/.vs/StringBasedBigInt/v17/DocumentLayout.json
