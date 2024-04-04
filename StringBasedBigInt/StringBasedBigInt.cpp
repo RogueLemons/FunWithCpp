@@ -2,10 +2,24 @@
 //
 
 #include <iostream>
+#include "BigInt.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    try {
+        auto num1 = BigInt("555");
+        auto num2 = BigInt(333);
+        auto num3 = BigInt();
+
+        std::cout << "Hello World!" << std::endl;
+        std::cout << num1.to_string() << std::endl;
+        std::cout << num2.to_string() << std::endl;
+        std::cout << num3.to_string() << std::endl;
+    }
+    catch (const std::exception& e) {
+        std::cout << "Exception: " << e.what() << std::endl;
+    }
+
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu

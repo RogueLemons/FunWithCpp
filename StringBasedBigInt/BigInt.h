@@ -11,11 +11,11 @@ public:
 
 	// Methods
 	BigInt Add(BigInt bigInt) const;
-	std::string ToString();
+	const std::string& to_string() const;
 
 private:
 	// Fields
-	std::string& value;
+	std::string value;
 
 	// Helper methods
 
