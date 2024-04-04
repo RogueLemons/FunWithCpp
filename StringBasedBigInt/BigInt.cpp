@@ -1,6 +1,19 @@
 #include "BigInt.h"
 #include <stdexcept>
 
+// Helper Functions
+namespace {
+
+	int as_int(char c) {
+		return c - '0';
+	}
+
+	char as_char(int i) {
+		return i + '0';
+	}
+
+}
+
 BigInt::BigInt(const std::string& number_as_string)
 {
 	if (number_as_string.length() < 1)
@@ -36,22 +49,22 @@ void BigInt::add_to_this(const BigInt& big_int)
 		return;
 	}
 
-	const auto a_digits = this->digits;
+	const std::string a_digits = this->digits;
 	const int a_length = a_digits.length();
-	const auto& b_digits = big_int.digits;
+	const std::string& b_digits = big_int.digits;
 	const int b_length = b_digits.length();
 	const int longest = std::max(a_length, b_length);
 
 	digits = "";
 	int holdover = 0;
 	for (int i = 0; i < longest; i++) {
-		int a_digit = i < a_length ? a_digits[i] - '0' : 0;
-		int b_digit = i < b_length ? b_digits[i] - '0' : 0;
+		int a_digit = i < a_length ? as_int(a_digits[i]) : 0;
+		int b_digit = i < b_length ? as_int(b_digits[i]) : 0;
 		int sum = a_digit + b_digit + holdover;
 
 		int digit = sum % 10;
 		holdover = (a_digit + b_digit) / 10;
-		digits.push_back(digit + '0');
+		digits.push_back(as_char(digit));
 	}
 	if (holdover > 0)
 		digits.push_back('1');
@@ -82,16 +95,3 @@ void BigInt::set_sign(bool is_positive)
 	this->is_positive = is_positive;
 }
 
-
-// Helper Functions
-namespace {
-
-	int to_int(char c) {
-		return c - '0';
-	}
-
-	char to_char(int i) {
-		return i + '0';
-	}
-
-}
