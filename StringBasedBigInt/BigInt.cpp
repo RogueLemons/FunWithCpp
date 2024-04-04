@@ -49,9 +49,9 @@ void BigInt::add_to_this(const BigInt& big_int)
 		return;
 	}
 
-	const std::string a_digits = this->digits;
+	const auto a_digits = this->digits;
 	const int a_length = a_digits.length();
-	const std::string& b_digits = big_int.digits;
+	const auto& b_digits = big_int.digits;
 	const int b_length = b_digits.length();
 	const int longest = std::max(a_length, b_length);
 
@@ -72,20 +72,25 @@ void BigInt::add_to_this(const BigInt& big_int)
 
 BigInt BigInt::add(const BigInt& big_int) const
 {
-	BigInt temp;
-	temp.add_to_this(*this);
+	BigInt temp = *this;
 	temp.add_to_this(big_int);
 	return temp;
 }
 
 void BigInt::subtract_from_this(const BigInt& big_int)
 {
+	if (this->is_positive == big_int.is_positive) {
+		add_to_this(big_int);
+		return;
+	}
+
+
+
 }
 
 BigInt BigInt::subtract(const BigInt& big_int) const
 {
-	BigInt temp;
-	temp.add_to_this(*this);
+	BigInt temp = *this;
 	temp.subtract_from_this(big_int);
 	return temp;
 }
