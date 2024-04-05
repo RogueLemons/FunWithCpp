@@ -113,11 +113,11 @@ void BigInt::unsigned_subtract_from_this(const BigInt& big_int)
 		int diff = a_digit - b_digit - steal;
 
 		if (diff >= 0) {
-			digits.push_back(diff);
+			digits.push_back(as_char(diff));
 			steal = 0;
 		}
 		else {
-			digits.push_back(10 + diff);
+			digits.push_back(as_char(10 + diff));
 			steal = 1;
 		}
 	}
