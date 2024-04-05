@@ -72,6 +72,30 @@ BigInt BigInt::subtract(const BigInt& big_int) const
 	return temp;
 }
 
+void BigInt::multiply_this_by(const BigInt& big_int)
+{
+	if (!big_int.is_positive)
+		set_sign(!is_positive);
+
+	BigInt product, digit_product;
+	std::string power;
+	for (const auto& digit : big_int.digits) {
+		digit_product.digits = digits;
+		digit_product.multiply_this_by_single_digit(as_int(digit));
+		digit_product.digits += power;
+		product.add_to_this(digit_product);
+		power.push_back('0');
+	}
+	this->digits = product.digits;
+}
+
+BigInt BigInt::multiply(const BigInt& big_int) const
+{
+	BigInt temp = *this;
+	temp.multiply_this_by(big_int);
+	return temp;
+}
+
 void BigInt::set_sign(bool is_positive)
 {
 	this->is_positive = is_positive;
@@ -142,5 +166,30 @@ bool BigInt::abs_is_bigger_than(const BigInt& big_int) const
 	}
 
 	return false;
+}
+
+void BigInt::multiply_this_by_single_digit(int factor)
+{
+	if (factor == 0) {
+		digits = "0";
+		set_sign(true);
+		return;
+	}
+	if (factor < 0) {
+		set_sign(!is_positive);
+		factor = abs(factor);
+	}
+	if (factor > 9) {
+		throw std::invalid_argument("May not provide integer whose absolute value is larger than 9.");
+	}
+
+	BigInt product;
+	std::string power;
+	for (auto& digit : digits) {
+		auto digit_product = std::to_string(as_int(digit) * factor) + power;
+		product.add_to_this({ digit_product });
+		power.push_back('0');
+	}
+	this->digits = product.digits;
 }
 

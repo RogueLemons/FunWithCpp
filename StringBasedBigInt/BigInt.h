@@ -15,6 +15,8 @@ public:
 	BigInt add(const BigInt& big_int) const;
 	void subtract_from_this(const BigInt& big_int);
 	BigInt subtract(const BigInt& big_int) const;
+	void multiply_this_by(const BigInt& big_int);
+	BigInt multiply(const BigInt& big_int) const;
 
 private:
 	// Fields
@@ -26,5 +28,6 @@ private:
 	void unsigned_add_to_this(const BigInt& big_int);
 	void unsigned_subtract_from_this(const BigInt& big_int);
 	bool abs_is_bigger_than(const BigInt& big_int) const;
+	void multiply_this_by_single_digit(int factor);
 };
 
