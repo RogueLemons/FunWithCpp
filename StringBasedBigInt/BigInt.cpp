@@ -44,30 +44,10 @@ std::string BigInt::to_string() const
 
 void BigInt::add_to_this(const BigInt& big_int)
 {
-	if (this->is_positive != big_int.is_positive) {
-		subtract_from_this(big_int);
-		return;
-	}
-
-	const auto a_digits = this->digits;
-	const int a_length = a_digits.length();
-	const auto& b_digits = big_int.digits;
-	const int b_length = b_digits.length();
-	const int longest = std::max(a_length, b_length);
-
-	digits = "";
-	int holdover = 0;
-	for (int i = 0; i < longest; i++) {
-		int a_digit = i < a_length ? as_int(a_digits[i]) : 0;
-		int b_digit = i < b_length ? as_int(b_digits[i]) : 0;
-		int sum = a_digit + b_digit + holdover;
-
-		int digit = sum % 10;
-		holdover = (a_digit + b_digit) / 10;
-		digits.push_back(as_char(digit));
-	}
-	if (holdover > 0)
-		digits.push_back('1');
+	if (this->is_positive == big_int.is_positive)
+		unsigned_add_to_this(big_int);
+	else
+		unsigned_subtract_from_this(big_int);
 }
 
 BigInt BigInt::add(const BigInt& big_int) const
@@ -79,13 +59,10 @@ BigInt BigInt::add(const BigInt& big_int) const
 
 void BigInt::subtract_from_this(const BigInt& big_int)
 {
-	if (this->is_positive == big_int.is_positive) {
-		add_to_this(big_int);
-		return;
-	}
-
-
-
+	if (this->is_positive == big_int.is_positive)
+		unsigned_subtract_from_this(big_int);
+	else
+		unsigned_add_to_this(big_int);
 }
 
 BigInt BigInt::subtract(const BigInt& big_int) const
@@ -98,5 +75,72 @@ BigInt BigInt::subtract(const BigInt& big_int) const
 void BigInt::set_sign(bool is_positive)
 {
 	this->is_positive = is_positive;
+}
+
+void BigInt::unsigned_add_to_this(const BigInt& big_int)
+{
+	const auto a_digits = this->digits;
+	const auto& b_digits = big_int.digits;
+	const int longest = std::max(a_digits.length(), b_digits.length());
+
+	digits = "";
+	int holdover = 0;
+	for (int i = 0; i < longest; i++) {
+		int a_digit = i < a_digits.length() ? as_int(a_digits[i]) : 0;
+		int b_digit = i < b_digits.length() ? as_int(b_digits[i]) : 0;
+		int sum = a_digit + b_digit + holdover;
+
+		int digit = sum % 10;
+		holdover = (a_digit + b_digit) / 10;
+		digits.push_back(as_char(digit));
+	}
+	if (holdover > 0)
+		digits.push_back('1');
+}
+
+void BigInt::unsigned_subtract_from_this(const BigInt& big_int)
+{
+	const auto is_biggest_abs = abs_is_bigger_than(big_int);
+	const std::string temp = digits;
+	const auto& a_digits = is_biggest_abs ? temp : big_int.digits;
+	const auto& b_digits = is_biggest_abs ? big_int.digits : temp;
+
+	digits = "";
+	int steal = 0;
+	for (int i = 0; i < a_digits.length(); i++) {
+		int a_digit = as_int(a_digits[i]);
+		int b_digit = i < b_digits.length() ? as_int(b_digits[i]) : 0;
+		int diff = a_digit - b_digit - steal;
+
+		if (diff >= 0) {
+			digits.push_back(diff);
+			steal = 0;
+		}
+		else {
+			digits.push_back(10 + diff);
+			steal = 1;
+		}
+	}
+
+	if (!is_biggest_abs)
+		set_sign(!is_positive);
+}
+
+bool BigInt::abs_is_bigger_than(const BigInt& big_int) const
+{
+	auto this_length = digits.length();
+	auto that_length = big_int.digits.length();
+	if (this_length != that_length)
+		return this_length > that_length;
+
+	for (int i = this_length; i >= 0; i--) {
+		auto this_digit = as_int(digits[i]);
+		auto that_digit = as_int(big_int.digits[i]);
+
+		if (this_digit != that_digit)
+			return this_digit > that_digit;
+	}
+
+	return false;
 }
 
