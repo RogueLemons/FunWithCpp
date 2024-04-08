@@ -37,11 +37,10 @@ BigInt::BigInt(int number) : BigInt(std::to_string(number))
 
 std::string BigInt::to_string() const
 {
-	std::string temp;
+	std::string temp = digits;
 	if (!is_positive)
 		temp.push_back('-');
-	for (int i = digits.length() - 1; i >= 0; i--)
-		temp.push_back(digits[i]);
+	std::reverse(temp.begin(), temp.end());
 	return temp;
 }
 
@@ -104,7 +103,7 @@ void BigInt::unsigned_add_to_this(const BigInt& big_int)
 	if (big_int.digits == "0")
 		return;
 
-	const auto a_digits = this->digits;
+	const auto a_digits(this->digits);
 	const auto& b_digits = big_int.digits;
 	const int longest = std::max(a_digits.length(), b_digits.length());
 
