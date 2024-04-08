@@ -21,14 +21,19 @@ BigInt::BigInt(const std::string& number_as_string)
 
 	is_positive = number_as_string[0] != '-';
 	int first_digit = is_positive ? 0 : 1;
-	if (number_as_string.length() > 1 && number_as_string[first_digit] == '0')
+	if (number_as_string[first_digit] == '0' && number_as_string.length() > 1)
 		throw std::invalid_argument("May not start number with the digit 0.");
 
-	for (int i = number_as_string.length() - 1; i >= first_digit; i--) {
+	auto i = number_as_string.length();
+	while (true) {
+		i--;
 		auto digit = number_as_string[i];
 		if (!std::isdigit(digit))
 			throw std::invalid_argument("May not provide non-digit characters in string.");
 		digits.push_back(digit);
+
+		if (i == first_digit)
+			break;
 	}
 }
 
@@ -160,12 +165,16 @@ bool BigInt::abs_is_bigger_than(const BigInt& big_int) const
 	if (this_length != that_length)
 		return this_length > that_length;
 
-	for (int i = this_length; i >= 0; i--) {
+	auto i = this_length;
+	while (true) {
+		i--;
 		auto this_digit = as_int(digits[i]);
 		auto that_digit = as_int(big_int.digits[i]);
 
 		if (this_digit != that_digit)
 			return this_digit > that_digit;
+		if (i == 0)
+			return false;
 	}
 
 	return false;
@@ -189,8 +198,9 @@ void BigInt::multiply_this_by_single_digit(int factor)
 	BigInt product;
 	std::string power;
 	for (auto& digit : digits) {
-		auto digit_product = std::to_string(as_int(digit) * factor) + power;
-		product.add_to_this({ digit_product });
+		auto digit_product = as_int(digit) * factor;
+		if (digit_product != 0)
+			product.add_to_this({ std::to_string(digit_product) + power });
 		power.push_back('0');
 	}
 	this->digits = product.digits;
