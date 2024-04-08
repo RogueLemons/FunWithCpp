@@ -6,8 +6,8 @@
 int main()
 {
     try {
-        auto num1 = BigInt("-111");
-        auto num2 = BigInt(30356);
+        auto num1 = BigInt("111");
+        auto num2 = BigInt(-30);
 
         std::cout << "Hello World!" << std::endl;
         std::cout << "x:\t" << num1.to_string() << std::endl;

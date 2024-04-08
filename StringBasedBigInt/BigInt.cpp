@@ -16,7 +16,7 @@ namespace {
 
 BigInt::BigInt(const std::string& number_as_string)
 {
-	if (number_as_string.length() < 1)
+	if (number_as_string == "")
 		throw std::invalid_argument("May not provide empty string as argument.");
 
 	is_positive = number_as_string[0] != '-';
@@ -105,11 +105,11 @@ void BigInt::unsigned_add_to_this(const BigInt& big_int)
 
 	const auto a_digits(this->digits);
 	const auto& b_digits = big_int.digits;
-	const int longest = std::max(a_digits.length(), b_digits.length());
+	const auto longest = std::max(a_digits.length(), b_digits.length());
 
 	digits = "";
 	int holdover = 0;
-	for (int i = 0; i < longest; i++) {
+	for (size_t i = 0; i < longest; i++) {
 		int a_digit = i < a_digits.length() ? as_int(a_digits[i]) : 0;
 		int b_digit = i < b_digits.length() ? as_int(b_digits[i]) : 0;
 		int sum = a_digit + b_digit + holdover;
@@ -134,7 +134,7 @@ void BigInt::unsigned_subtract_from_this(const BigInt& big_int)
 
 	digits = "";
 	int steal = 0;
-	for (int i = 0; i < a_digits.length(); i++) {
+	for (size_t i = 0; i < a_digits.length(); i++) {
 		int a_digit = as_int(a_digits[i]);
 		int b_digit = i < b_digits.length() ? as_int(b_digits[i]) : 0;
 		int diff = a_digit - b_digit - steal;
