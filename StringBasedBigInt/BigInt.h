@@ -24,7 +24,6 @@ private:
 	bool is_positive;
 
 	// Helper methods
-	void set_sign(bool is_positive);
 	void unsigned_add_to_this(const BigInt& big_int);
 	void unsigned_subtract_from_this(const BigInt& big_int);
 	bool abs_is_bigger_than(const BigInt& big_int) const;

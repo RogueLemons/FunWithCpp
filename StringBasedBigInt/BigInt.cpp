@@ -78,7 +78,7 @@ BigInt BigInt::subtract(const BigInt& big_int) const
 void BigInt::multiply_this_by(const BigInt& big_int)
 {
 	if (!big_int.is_positive)
-		set_sign(!is_positive);
+		is_positive = !is_positive;
 
 	BigInt product, digit_product;
 	std::string power;
@@ -97,11 +97,6 @@ BigInt BigInt::multiply(const BigInt& big_int) const
 	BigInt temp = *this;
 	temp.multiply_this_by(big_int);
 	return temp;
-}
-
-void BigInt::set_sign(bool is_positive)
-{
-	this->is_positive = is_positive;
 }
 
 void BigInt::unsigned_add_to_this(const BigInt& big_int)
@@ -156,7 +151,7 @@ void BigInt::unsigned_subtract_from_this(const BigInt& big_int)
 	}
 
 	if (!is_biggest_abs)
-		set_sign(!is_positive);
+		is_positive = !is_positive;
 }
 
 bool BigInt::abs_is_bigger_than(const BigInt& big_int) const
@@ -181,11 +176,11 @@ void BigInt::multiply_this_by_single_digit(int factor)
 {
 	if (factor == 0) {
 		digits = "0";
-		set_sign(true);
+		is_positive = true;
 		return;
 	}
 	if (factor < 0) {
-		set_sign(!is_positive);
+		is_positive = !is_positive;
 		factor = abs(factor);
 	}
 	if (factor > 9) {
