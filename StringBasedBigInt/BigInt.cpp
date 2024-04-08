@@ -106,6 +106,9 @@ void BigInt::set_sign(bool is_positive)
 
 void BigInt::unsigned_add_to_this(const BigInt& big_int)
 {
+	if (big_int.digits == "0")
+		return;
+
 	const auto a_digits = this->digits;
 	const auto& b_digits = big_int.digits;
 	const int longest = std::max(a_digits.length(), b_digits.length());
@@ -127,6 +130,9 @@ void BigInt::unsigned_add_to_this(const BigInt& big_int)
 
 void BigInt::unsigned_subtract_from_this(const BigInt& big_int)
 {
+	if (big_int.digits == "0")
+		return;
+
 	const auto is_biggest_abs = abs_is_bigger_than(big_int);
 	const std::string temp = digits;
 	const auto& a_digits = is_biggest_abs ? temp : big_int.digits;
