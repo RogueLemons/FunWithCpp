@@ -18,9 +18,12 @@ BigInt::BigInt(const std::string& number_as_string)
 {
 	if (number_as_string.length() < 1)
 		throw std::invalid_argument("May not provide empty string as argument.");
-	is_positive = number_as_string[0] != '-';
 
+	is_positive = number_as_string[0] != '-';
 	int first_digit = is_positive ? 0 : 1;
+	if (number_as_string.length() > 1 && number_as_string[first_digit] == '0')
+		throw std::invalid_argument("May not start number with the digit 0.");
+
 	for (int i = number_as_string.length() - 1; i >= first_digit; i--) {
 		auto digit = number_as_string[i];
 		if (!std::isdigit(digit))
