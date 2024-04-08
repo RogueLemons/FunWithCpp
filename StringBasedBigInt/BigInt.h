@@ -7,7 +7,7 @@ class BigInt
 public:
 	// Constructor
 	BigInt(const std::string& number_as_string);
-	BigInt(int number = 0);
+	BigInt(long long number = 0);
 
 	// Methods
 	std::string to_string() const;

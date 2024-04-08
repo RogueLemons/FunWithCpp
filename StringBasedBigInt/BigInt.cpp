@@ -37,7 +37,7 @@ BigInt::BigInt(const std::string& number_as_string)
 	}
 }
 
-BigInt::BigInt(int number) : BigInt(std::to_string(number))
+BigInt::BigInt(long long number) : BigInt(std::to_string(number))
 {}
 
 std::string BigInt::to_string() const
