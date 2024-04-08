@@ -7,12 +7,12 @@ int main()
 {
     try {
         auto num1 = BigInt("-111");
-        auto num2 = BigInt(-3);
+        auto num2 = BigInt(30356);
 
         std::cout << "Hello World!" << std::endl;
         std::cout << "x:\t" << num1.to_string() << std::endl;
         std::cout << "y:\t" << num2.to_string() << std::endl;
-        std::cout << "x-y:\t" << num1.add(num2).to_string() << std::endl;
+        std::cout << "x+y:\t" << num1.add(num2).to_string() << std::endl;
         /*
         num1.subtract_from_this(num2);
         std::cout << "x-y:\t" << num1.to_string() << std::endl;

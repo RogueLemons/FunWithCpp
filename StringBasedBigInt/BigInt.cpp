@@ -84,7 +84,7 @@ void BigInt::multiply_this_by(const BigInt& big_int)
 	for (const auto& digit : big_int.digits) {
 		digit_product.digits = digits;
 		digit_product.multiply_this_by_single_digit(as_int(digit));
-		digit_product.digits += power;
+		digit_product.digits = power + digit_product.digits;
 		product.add_to_this(digit_product);
 		power.push_back('0');
 	}
