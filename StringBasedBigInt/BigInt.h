@@ -21,6 +21,9 @@ public:
 	void divide_this_by(const BigInt& big_int);
 	BigInt divide(const BigInt& big_int) const;
 
+	// Static functions
+	static BigInt factorial(int n);
+
 private:
 	// Fields
 	std::string digits;

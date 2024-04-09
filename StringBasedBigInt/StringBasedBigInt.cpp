@@ -19,6 +19,11 @@ int main()
         std::cout << std::endl;
         std::cout << "x*y:\t" << num1.multiply(num2).to_string() << std::endl;
         std::cout << "x/y:\t" << num1.divide(num2).to_string() << std::endl;
+
+        std::cout << std::endl;
+        int i = 500;
+        // std::cin >> i;
+        std::cout << "Factorial of " << i << ":\t" << BigInt::factorial(i).to_string() << std::endl;
     }
     catch (const std::exception& e) {
         std::cout << "Exception: " << e.what() << std::endl;

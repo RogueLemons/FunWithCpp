@@ -163,6 +163,19 @@ BigInt BigInt::divide(const BigInt& big_int) const
 	return temp;
 }
 
+BigInt BigInt::factorial(int n)
+{
+	if (n == 0)
+		return { 1 };
+	if (n < 0)
+		throw std::invalid_argument("Cannot compute factorial of negative value.");
+
+	BigInt factorial(1);
+	for (unsigned int i = 2; i <= n; i++)
+		factorial.multiply_this_by({ i });
+	return factorial;
+}
+
 void BigInt::unsigned_add_to_this(const BigInt& big_int)
 {
 	if (big_int.digits == "0")
