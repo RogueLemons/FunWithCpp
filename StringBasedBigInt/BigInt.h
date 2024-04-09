@@ -24,6 +24,7 @@ public:
 
 	// Static functions
 	static BigInt factorial(int n);
+	static BigInt fibonacci(int n);
 
 	// Operators
 	void operator += (const BigInt& big_int);

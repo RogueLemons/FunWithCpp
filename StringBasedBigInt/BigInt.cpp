@@ -192,6 +192,20 @@ BigInt BigInt::factorial(int n)
 	return factorial;
 }
 
+BigInt BigInt::fibonacci(int n)
+{
+	BigInt a(1), b(1), c(0);
+	if (!n)
+		return c;
+	n--;
+	while (n--) {
+		c = a + b;
+		b = a;
+		a = c;
+	}
+	return b;
+}
+
 void BigInt::operator+=(const BigInt& big_int)
 {
 	add_to_this(big_int);

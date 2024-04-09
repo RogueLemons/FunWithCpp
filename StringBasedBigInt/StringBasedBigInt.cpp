@@ -23,7 +23,8 @@ int main()
         std::cout << "x/y:\t" << (num1 / num2).to_string() << std::endl;
 
         std::cout << std::endl;
-        int i = 50;
+        int i = 30;
+        std::cout << "Fibonacci at " << i << ":\t" << BigInt::fibonacci(i).to_string() << std::endl;
         std::cout << "Factorial of " << i << ":\t" << BigInt::factorial(i).to_string() << std::endl;
     }
     catch (const std::exception& e) {
