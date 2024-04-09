@@ -121,11 +121,18 @@ void BigInt::divide_this_by(const BigInt& big_int)
 {
 	if (big_int.digits == "0")
 		throw std::invalid_argument("May not divide by 0.");
+	if (equals(big_int)) {
+		digits = "1";
+		if (!big_int.is_positive)
+			is_positive = !is_positive;
+		return;
+	}
 	if (!abs_is_bigger_than(big_int)) {
 		digits = "0";
 		is_positive = true;
 		return;
 	}
+
 	if (!big_int.is_positive)
 		is_positive = !is_positive;
 
@@ -141,7 +148,7 @@ void BigInt::divide_this_by(const BigInt& big_int)
 	} 
 	while (abs_is_bigger_than(test_product));
 
-	while (!abs_is_bigger_than(test_product)) {
+	while (!(abs_is_bigger_than(test_product) || equals(test_product))) {
 		test_product.unsigned_subtract_from_this(big_int);
 		test_factor.unsigned_subtract_from_this({ 1 });
 	}
