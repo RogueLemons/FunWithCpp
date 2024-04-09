@@ -49,6 +49,14 @@ std::string BigInt::to_string() const
 	return temp;
 }
 
+bool BigInt::equals(const BigInt& big_int) const
+{
+	if (this->is_positive != big_int.is_positive)
+		return false;
+
+	return abs_equals(big_int);
+}
+
 void BigInt::add_to_this(const BigInt& big_int)
 {
 	if (this->is_positive == big_int.is_positive)
@@ -177,6 +185,12 @@ void BigInt::unsigned_subtract_from_this(const BigInt& big_int)
 	if (big_int.digits == "0")
 		return;
 
+	if (abs_equals(big_int)) {
+		is_positive = true;
+		digits = "0";
+		return;
+	}
+
 	const auto is_biggest_abs = abs_is_bigger_than(big_int);
 	const std::string temp = digits;
 	const auto& a_digits = is_biggest_abs ? temp : big_int.digits;
@@ -257,5 +271,20 @@ void BigInt::multiply_this_by_single_digit(int factor)
 void BigInt::multiply_this_by_10()
 {
 	digits = "0" + digits;
+}
+
+bool BigInt::abs_equals(const BigInt& big_int) const
+{
+	if (this->digits.length() != big_int.digits.length())
+		return false;
+
+	auto i = digits.length();
+	while (true) {
+		i--;
+		if (this->digits[i] != big_int.digits[i])
+			return false;
+		if (i == 0)
+			return true;
+	}
 }
 

@@ -11,6 +11,7 @@ public:
 
 	// Methods
 	std::string to_string() const;
+	bool equals(const BigInt& big_int) const;
 	void add_to_this(const BigInt& big_int);
 	BigInt add(const BigInt& big_int) const;
 	void subtract_from_this(const BigInt& big_int);
@@ -31,5 +32,6 @@ private:
 	bool abs_is_bigger_than(const BigInt& big_int) const;
 	void multiply_this_by_single_digit(int factor);
 	void multiply_this_by_10();
+	bool abs_equals(const BigInt& big_int) const;
 };
 
