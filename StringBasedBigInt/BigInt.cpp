@@ -81,6 +81,12 @@ BigInt BigInt::subtract(const BigInt& big_int) const
 
 void BigInt::multiply_this_by(const BigInt& big_int)
 {
+	if (big_int.digits == "0") {
+		is_positive = true;
+		digits = "0";
+		return;
+	}
+
 	if (!big_int.is_positive)
 		is_positive = !is_positive;
 
@@ -153,6 +159,9 @@ void BigInt::unsigned_subtract_from_this(const BigInt& big_int)
 			steal = 1;
 		}
 	}
+
+	while (digits.back() == '0')
+		digits.pop_back();
 
 	if (!is_biggest_abs)
 		is_positive = !is_positive;
