@@ -137,7 +137,7 @@ void BigInt::divide_this_by(const BigInt& big_int)
 		is_positive = !is_positive;
 
 	auto power_diff = this->digits.length() - big_int.digits.length();
-	auto test_factor_digits = (power_diff - 1 > 1) ? std::string(power_diff - 1, '0') : "1";
+	auto test_factor_digits = (power_diff != 1 && power_diff != 0) ? std::string(power_diff - 1, '0') : "1";
 	test_factor_digits[0] = '1';
 	auto test_factor = BigInt(test_factor_digits);
 
