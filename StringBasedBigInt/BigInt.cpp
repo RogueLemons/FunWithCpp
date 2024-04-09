@@ -57,6 +57,22 @@ bool BigInt::equals(const BigInt& big_int) const
 	return abs_equals(big_int);
 }
 
+bool BigInt::is_bigger_than(const BigInt& big_int) const
+{
+	if (is_positive) {
+		if (big_int.is_positive)
+			return abs_is_bigger_than(big_int);
+		else
+			return true;
+	}
+	else {
+		if (big_int.is_positive)
+			return false;
+		else
+			return abs_is_bigger_than(big_int);
+	}
+}
+
 void BigInt::add_to_this(const BigInt& big_int)
 {
 	if (this->is_positive == big_int.is_positive)
@@ -174,6 +190,76 @@ BigInt BigInt::factorial(int n)
 	for (unsigned int i = 2; i <= n; i++)
 		factorial.multiply_this_by(i);
 	return factorial;
+}
+
+void BigInt::operator+=(const BigInt& big_int)
+{
+	add_to_this(big_int);
+}
+
+BigInt BigInt::operator+(const BigInt& big_int) const
+{
+	return add(big_int);
+}
+
+void BigInt::operator-=(const BigInt& big_int)
+{
+	subtract_from_this(big_int);
+}
+
+BigInt BigInt::operator-(const BigInt& big_int) const
+{
+	return subtract(big_int);
+}
+
+void BigInt::operator*=(const BigInt& big_int)
+{
+	multiply_this_by(big_int);
+}
+
+BigInt BigInt::operator*(const BigInt& big_int) const
+{
+	return multiply(big_int);
+}
+
+void BigInt::operator/=(const BigInt& big_int)
+{
+	divide_this_by(big_int);
+}
+
+BigInt BigInt::operator/(const BigInt& big_int) const
+{
+	return divide(big_int);
+}
+
+bool BigInt::operator==(const BigInt& big_int) const
+{
+	return equals(big_int);
+}
+
+bool BigInt::operator!=(const BigInt& big_int) const
+{
+	return !equals(big_int);
+}
+
+bool BigInt::operator<(const BigInt& big_int) const
+{
+	return !is_bigger_than(big_int) && !equals(big_int);
+}
+
+bool BigInt::operator<=(const BigInt& big_int) const
+{
+	return !is_bigger_than(big_int) || equals(big_int);
+}
+
+bool BigInt::operator>(const BigInt& big_int) const
+{
+	return is_bigger_than(big_int);
+}
+
+bool BigInt::operator>=(const BigInt& big_int) const
+{
+	return is_bigger_than(big_int) || equals(big_int);
 }
 
 void BigInt::unsigned_add_to_this(const BigInt& big_int)

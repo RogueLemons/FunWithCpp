@@ -12,6 +12,7 @@ public:
 	// Methods
 	std::string to_string() const;
 	bool equals(const BigInt& big_int) const;
+	bool is_bigger_than(const BigInt& big_int) const;
 	void add_to_this(const BigInt& big_int);
 	BigInt add(const BigInt& big_int) const;
 	void subtract_from_this(const BigInt& big_int);
@@ -23,6 +24,22 @@ public:
 
 	// Static functions
 	static BigInt factorial(int n);
+
+	// Operators
+	void operator += (const BigInt& big_int);
+	BigInt operator + (const BigInt& big_int) const;
+	void operator -= (const BigInt& big_int);
+	BigInt operator - (const BigInt& big_int) const;
+	void operator *= (const BigInt& big_int);
+	BigInt operator * (const BigInt& big_int) const;
+	void operator /= (const BigInt& big_int);
+	BigInt operator / (const BigInt& big_int) const;
+	bool operator == (const BigInt& big_int) const;
+	bool operator != (const BigInt& big_int) const;
+	bool operator < (const BigInt& big_int) const;
+	bool operator <= (const BigInt& big_int) const;
+	bool operator > (const BigInt& big_int) const;
+	bool operator >= (const BigInt& big_int) const;
 
 private:
 	// Fields
