@@ -215,3 +215,8 @@ void BigInt::multiply_this_by_single_digit(int factor)
 	this->digits = product.digits;
 }
 
+void BigInt::multiply_this_by_10()
+{
+	digits = "0" + digits;
+}
+
