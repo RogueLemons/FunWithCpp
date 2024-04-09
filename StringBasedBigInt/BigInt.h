@@ -33,7 +33,7 @@ private:
 	void unsigned_add_to_this(const BigInt& big_int);
 	void unsigned_subtract_from_this(const BigInt& big_int);
 	bool abs_is_bigger_than(const BigInt& big_int) const;
-	void multiply_this_by_single_digit(int factor);
+	void multiply_this_by(int factor);
 	void multiply_this_by_10();
 	bool abs_equals(const BigInt& big_int) const;
 };

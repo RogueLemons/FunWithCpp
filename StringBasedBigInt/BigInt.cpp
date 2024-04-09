@@ -102,7 +102,7 @@ void BigInt::multiply_this_by(const BigInt& big_int)
 	std::string power;
 	for (const auto& digit : big_int.digits) {
 		digit_product.digits = digits;
-		digit_product.multiply_this_by_single_digit(as_int(digit));
+		digit_product.multiply_this_by(as_int(digit));
 		digit_product.digits = power + digit_product.digits;
 		product.add_to_this(digit_product);
 		power.push_back('0');
@@ -172,7 +172,7 @@ BigInt BigInt::factorial(int n)
 
 	BigInt factorial(1);
 	for (unsigned int i = 2; i <= n; i++)
-		factorial.multiply_this_by({ i });
+		factorial.multiply_this_by(i);
 	return factorial;
 }
 
@@ -262,7 +262,7 @@ bool BigInt::abs_is_bigger_than(const BigInt& big_int) const
 	return false;
 }
 
-void BigInt::multiply_this_by_single_digit(int factor)
+void BigInt::multiply_this_by(int factor)
 {
 	if (factor == 0) {
 		digits = "0";
@@ -272,9 +272,6 @@ void BigInt::multiply_this_by_single_digit(int factor)
 	if (factor < 0) {
 		is_positive = !is_positive;
 		factor = abs(factor);
-	}
-	if (factor > 9) {
-		throw std::invalid_argument("May not provide integer whose absolute value is larger than 9.");
 	}
 
 	BigInt product;
