@@ -17,6 +17,8 @@ public:
 	BigInt subtract(const BigInt& big_int) const;
 	void multiply_this_by(const BigInt& big_int);
 	BigInt multiply(const BigInt& big_int) const;
+	void divide_this_by(const BigInt& big_int);
+	BigInt divide(const BigInt& big_int) const;
 
 private:
 	// Fields

@@ -109,6 +109,45 @@ BigInt BigInt::multiply(const BigInt& big_int) const
 	return temp;
 }
 
+void BigInt::divide_this_by(const BigInt& big_int)
+{
+	if (big_int.digits == "0")
+		throw std::invalid_argument("May not divide by 0.");
+	if (!abs_is_bigger_than(big_int)) {
+		digits = "0";
+		is_positive = true;
+		return;
+	}
+	if (!big_int.is_positive)
+		is_positive = !is_positive;
+
+	auto power_diff = this->digits.length() - big_int.digits.length();
+	auto test_factor_digits = (power_diff - 1 > 1) ? std::string(power_diff - 1, '0') : "1";
+	test_factor_digits[0] = '1';
+	auto test_factor = BigInt(test_factor_digits);
+
+	BigInt test_product;
+	do {
+		test_factor.multiply_this_by_10();
+		test_product = big_int.multiply(test_factor);
+	} 
+	while (abs_is_bigger_than(test_product));
+
+	while (!abs_is_bigger_than(test_product)) {
+		test_product.unsigned_subtract_from_this(big_int);
+		test_factor.unsigned_subtract_from_this({ 1 });
+	}
+
+	this->digits = test_factor.digits;
+}
+
+BigInt BigInt::divide(const BigInt& big_int) const
+{
+	BigInt temp = *this;
+	temp.divide_this_by(big_int);
+	return temp;
+}
+
 void BigInt::unsigned_add_to_this(const BigInt& big_int)
 {
 	if (big_int.digits == "0")
