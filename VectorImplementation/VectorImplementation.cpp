@@ -5,12 +5,38 @@
 using std::cout;
 using std::endl;
 
+static void print(const my::Vector<double>& vec) {
+    cout << "Size: " << vec.size() << ", Cap: " << vec.capacity();
+    cout << ", Elements: [";
+    for (int i = 0; i < vec.size(); i++) {
+        cout << " " << vec[i];
+        if (i != vec.size() - 1)
+            cout << ",";
+    }
+    cout << " ] " << endl << endl;
+}
+
 int main()
 {
     try {
-        cout << "Hello World!" << endl;
-        my::Vector<int> v;
-        cout << v.capacity() << endl;
+        cout << "--- Vector Implementation ---" << endl << endl;
+
+        cout << "Empty vector:" << endl;
+        my::Vector<double> vec;
+        print(vec);
+
+        cout << "Add some values:" << endl;
+        vec.push_back(1.2);
+        vec.push_back(2.4);
+        vec.push_back(3.6);
+        vec.push_back(4.8);
+        vec.push_back(6.0);
+        print(vec);
+
+        int index = 3;
+        cout << "Erase at index " << index << ":" << endl;
+        vec.erase(index);
+        print(vec);
 
     }
     catch (const std::exception& e) {
