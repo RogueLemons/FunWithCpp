@@ -20,9 +20,9 @@ int main()
 {
     try {
         cout << "--- Vector Implementation ---" << endl << endl;
+        my::Vector<double> vec;
 
         cout << "Empty vector:" << endl;
-        my::Vector<double> vec;
         print(vec);
 
         cout << "Add some values:" << endl;
