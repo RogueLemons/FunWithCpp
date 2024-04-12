@@ -1,11 +1,21 @@
 // VectorImplementation.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
 
 #include <iostream>
+#include "MyVector.hpp"
+using std::cout;
+using std::endl;
 
 int main()
 {
-    std::cout << "Hello World!\n";
+    try {
+        cout << "Hello World!" << endl;
+        my::Vector<int> v;
+        cout << v.capacity() << endl;
+
+    }
+    catch (const std::exception& e) {
+        cout << e.what() << endl;
+    }
 }
 
 // Run program: Ctrl + F5 or Debug > Start Without Debugging menu
