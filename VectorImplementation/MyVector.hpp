@@ -16,8 +16,8 @@ public:
 	~Vector();
 
 	// Methods
-	int size() const { return _size; };
-	int capacity() const { return _capacity; };
+	int size() const { return _size; }
+	int capacity() const { return _capacity; }
 	bool is_empty() const { return _size == 0; }
 	void clear();
 	void push_back(const T& element);
@@ -28,8 +28,8 @@ public:
 	T& front() const;
 
 	// Operators
-	T& operator [](int index);
-	const T& operator [](int index) const;
+	T& operator [](int index) { return _elements[index]; }
+	const T& operator [](int index) const { return _elements[index]; }
 	Vector& operator =(const Vector& source);
 
 
@@ -74,4 +74,21 @@ template<typename T>
 inline my::Vector<T>::~Vector()
 {
 	delete[] _elements;
+}
+
+template<typename T>
+inline my::Vector<T>& my::Vector<T>::operator=(const my::Vector<T>& source)
+{
+	if (source._size > _size) {
+		delete[] _elements;
+		_capacity = source._size * 2;
+		_elements = new T[_capacity];
+	}
+	
+	_size = source._size;
+	for (int i = 0; i < _size; i++) {
+		_elements[i] = source._elements[i];
+	}
+
+	return *this;
 }
