@@ -37,6 +37,8 @@ public:
 	void pop_back();
 	void insert(int index, const T& element);
 	void erase(int index);
+	void adjust_capacity();
+	void adjust_capacity(int capacity);
 
 	// Operators
 	T& operator [](int index) { return _elements[adjust_index(index)]; }
@@ -96,15 +98,8 @@ inline my::Vector<T>::~Vector()
 template<typename T>
 inline void my::Vector<T>::push_back(const T& element)
 {
-	if (_size == _capacity) {
-		_capacity *= 2;
-		T* new_elements = new T[_capacity];
-		for (int i = 0; i < _size; i++) {
-			new_elements[i] = _elements[i];
-		}
-		delete[] _elements;
-		_elements = new_elements;
-	}
+	if (_size == _capacity)
+		adjust_capacity(_capacity * 2);
 
 	_elements[_size] = element;
 	_size++;
@@ -160,6 +155,27 @@ inline void my::Vector<T>::erase(int index)
 	for (int i = index; i < _size; i++) {
 		_elements[i] = _elements[i + 1];
 	}
+}
+
+template<typename T>
+inline void my::Vector<T>::adjust_capacity()
+{
+	adjust_capacity(_size * 2);
+}
+
+template<typename T>
+inline void my::Vector<T>::adjust_capacity(int capacity)
+{
+	if (capacity < _size)
+		throw std::invalid_argument("Cannot decrease capacity lower than current size.");
+
+	_capacity = capacity;
+	T* new_elements = new T[_capacity];
+	for (int i = 0; i < _size; i++) {
+		new_elements[i] = _elements[i];
+	}
+	delete[] _elements;
+	_elements = new_elements;
 }
 
 template<typename T>

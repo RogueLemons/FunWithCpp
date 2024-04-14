@@ -55,6 +55,15 @@ int main()
         cout << "Get out-of-bounds elements " << -1 << ", " << vec.size() << ", " << 2 * vec.size() + 3 << ":" << endl;
         cout << vec[-1] << ", " << vec[vec.size()] << ", " << vec[2 * vec.size() + 3] << endl << endl;
 
+        while (vec.size() > 3)
+            vec.pop_back();
+        cout << "Pop values until size is 3" << endl;
+        print(vec);
+
+        cout << "Free up memory by reducing capacity:" << endl;
+        vec.adjust_capacity();
+        print(vec);
+
     }
     catch (const std::exception& e) {
         cout << e.what() << endl;
