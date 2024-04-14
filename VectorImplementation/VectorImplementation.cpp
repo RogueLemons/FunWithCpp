@@ -47,7 +47,7 @@ int main()
         index = 8;
         while (vec.size() != vec.capacity())
             vec.push_back(42);
-        int value = 7.7;
+        double value = 7.7;
         cout << "Insert " << value << " at index " << index << " (with capacity increase) : " << endl;
         vec.insert(index, 7.7);
         print(vec);
