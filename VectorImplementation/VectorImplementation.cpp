@@ -53,7 +53,7 @@ int main()
         print(vec);
 
         cout << "Get elements " << -1 << ", " << vec.size() << ", " << 2 * vec.size() + 2 << ":" << endl;
-        cout << vec[-1] << ", " << vec[vec.size()] << ", " << vec[2 * vec.size() + 2] << endl;
+        cout << vec[-1] << ", " << vec[vec.size()] << ", " << vec[2 * vec.size() + 2] << endl << endl;
 
     }
     catch (const std::exception& e) {
