@@ -20,9 +20,10 @@ int main()
 {
     try {
         cout << "--- Vector Implementation ---" << endl << endl;
-        my::Vector<double> vec(5);
-
-        cout << "Empty vector:" << endl;
+        
+        int initial_capacity = 5;
+        my::Vector<double> vec(initial_capacity);
+        cout << "Empty vector with initial capacity " << initial_capacity << ": " << endl;
         print(vec);
 
         cout << "Add some values:" << endl;
