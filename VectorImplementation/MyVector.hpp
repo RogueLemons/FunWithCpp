@@ -14,6 +14,9 @@ private:
 	int _capacity;
 	T* _elements;
 
+	// Helper methods
+	int adjust_index(int index) const;
+
 public:
 	// Constructors and Destructor
 	Vector(int initial_capacity = 10);
@@ -36,10 +39,21 @@ public:
 	void erase(int index);
 
 	// Operators
-	T& operator [](int index) { return _elements[index]; }
-	const T& operator [](int index) const { return _elements[index]; }
+	T& operator [](int index) { return _elements[adjust_index(index)]; }
+	const T& operator [](int index) const { return _elements[adjust_index(index)]; }
 	Vector& operator =(const Vector& source);
 };
+
+template<typename T>
+inline int my::Vector<T>::adjust_index(int index) const
+{
+	if (index >= _size)
+		return adjust_index(index - _size);
+	else if (index < 0)
+		return adjust_index(_size + index);
+	else
+		return index;
+}
 
 template<typename T>
 inline my::Vector<T>::Vector(int initial_capacity)
@@ -105,6 +119,8 @@ inline void my::Vector<T>::pop_back()
 template<typename T>
 inline void my::Vector<T>::insert(int index, const T& element)
 {
+	index = adjust_index(index);
+
 	if (index == _size) {
 		push_back(element);
 		return;
@@ -129,16 +145,18 @@ inline void my::Vector<T>::insert(int index, const T& element)
 	for (int i = _size - 1; i >= index; i--) {
 		_elements[i] = _elements[i - 1];
 	}
-	_elements[index - 1] = element;
+	_elements[index] = element;
 	_size++;
 }
 
 template<typename T>
 inline void my::Vector<T>::erase(int index)
 {
+	index = adjust_index(index);
+
 	_size--;
 	for (int i = index; i < _size; i++) {
-		_elements[i] = _elements[i - 1];
+		_elements[i] = _elements[i + 1];
 	}
 }
 
@@ -158,3 +176,5 @@ inline my::Vector<T>& my::Vector<T>::operator=(const my::Vector<T>& source)
 
 	return *this;
 }
+
+

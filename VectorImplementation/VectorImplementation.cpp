@@ -20,7 +20,7 @@ int main()
 {
     try {
         cout << "--- Vector Implementation ---" << endl << endl;
-        my::Vector<double> vec;
+        my::Vector<double> vec(5);
 
         cout << "Empty vector:" << endl;
         print(vec);
@@ -31,12 +31,29 @@ int main()
         vec.push_back(3.6);
         vec.push_back(4.8);
         vec.push_back(6.0);
+        vec.push_back(7.2);
         print(vec);
 
-        int index = 3;
+        int index = 2;
         cout << "Erase at index " << index << ":" << endl;
         vec.erase(index);
         print(vec);
+
+        index = 1;
+        cout << "Insert at index " << index << ":" << endl;
+        vec.insert(index, 7.7);
+        print(vec);
+
+        index = 8;
+        while (vec.size() != vec.capacity())
+            vec.push_back(42);
+        int value = 7.7;
+        cout << "Insert " << value << " at index " << index << " (with capacity increase) : " << endl;
+        vec.insert(index, 7.7);
+        print(vec);
+
+        cout << "Get elements " << -1 << ", " << vec.size() << ", " << 2 * vec.size() + 2 << ":" << endl;
+        cout << vec[-1] << ", " << vec[vec.size()] << ", " << vec[2 * vec.size() + 2] << endl;
 
     }
     catch (const std::exception& e) {
