@@ -14,7 +14,7 @@ private:
 	int _capacity;
 	T* _elements;
 
-	// Helper methods
+	// Out-of-bounds indexing
 	int adjust_index(int index) const;
 
 public:
@@ -47,7 +47,9 @@ public:
 template<typename T>
 inline int my::Vector<T>::adjust_index(int index) const
 {
-	if (index >= _size)
+	if (is_empty())
+		throw std::invalid_argument("Cannot access elements of empty Vector.");
+	else if (index >= _size)
 		return adjust_index(index - _size);
 	else if (index < 0)
 		return adjust_index(_size + index);

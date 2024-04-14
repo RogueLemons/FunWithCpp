@@ -52,8 +52,8 @@ int main()
         vec.insert(index, 7.7);
         print(vec);
 
-        cout << "Get elements " << -1 << ", " << vec.size() << ", " << 2 * vec.size() + 2 << ":" << endl;
-        cout << vec[-1] << ", " << vec[vec.size()] << ", " << vec[2 * vec.size() + 2] << endl << endl;
+        cout << "Get out-of-bounds elements " << -1 << ", " << vec.size() << ", " << 2 * vec.size() + 3 << ":" << endl;
+        cout << vec[-1] << ", " << vec[vec.size()] << ", " << vec[2 * vec.size() + 3] << endl << endl;
 
     }
     catch (const std::exception& e) {
