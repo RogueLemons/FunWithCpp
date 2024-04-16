@@ -1,37 +1,17 @@
 // VectorImplementation.cpp : This file contains the 'main' function. Program execution begins and ends there.
 
+// Includes and usings
 #include <iostream>
 #include "MyVector.hpp"
 #include "MyModularVector.hpp"
 using std::cout;
 using std::endl;
 
+// Functions
 static void test_my_simple_vector();
 static void test_my_modular_vector();
-
-template <typename T>
-static void print_vector(const my::Vector<T>& vec) {
-    cout << "Size: " << vec.size() << ", Cap: " << vec.capacity();
-    cout << ", Elements: [";
-    for (int i = 0; i < vec.size(); i++) {
-        cout << " " << vec[i];
-        if (i != vec.size() - 1)
-            cout << ",";
-    }
-    cout << " ] " << endl << endl;
-}
-
-template <typename T, typename A>
-static void print_vector(const my_modular::Vector<T, A>& vec) {
-    cout << "Size: " << vec.size() << ", Cap: " << vec.capacity();
-    cout << ", Elements: [";
-    for (int i = 0; i < vec.size(); i++) {
-        cout << " " << vec[i];
-        if (i != vec.size() - 1)
-            cout << ",";
-    }
-    cout << " ] " << endl << endl;
-}
+template <typename V>
+static void print_vector(const V& vec);
 
 int main()
 {
@@ -144,4 +124,17 @@ void test_my_modular_vector()
         vec.pop_back();
     cout << "Pop values until size is 3" << endl;
     print_vector(vec);
+}
+
+template<typename V>
+void print_vector(const V& vec)
+{
+    cout << "Size: " << vec.size() << ", Cap: " << vec.capacity();
+    cout << ", Elements: [";
+    for (int i = 0; i < vec.size(); i++) {
+        cout << " " << vec[i];
+        if (i != vec.size() - 1)
+            cout << ",";
+    }
+    cout << " ] " << endl << endl;
 }
