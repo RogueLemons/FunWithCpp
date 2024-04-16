@@ -89,7 +89,7 @@ void test_my_modular_vector()
     cout << "\n--- Vector with Modular Automatic Cap. Resizing ---" << endl << endl;
 
     int initial_capacity = 4;
-    my_modular::Vector<double, cap_adj::IncreaseOnly<double>> vec(initial_capacity);
+    my_modular::Vector<double, cap_adj::Continous> vec(initial_capacity);
     cout << "Empty vector with initial capacity " << initial_capacity << ": " << endl;
     print_vector(vec);
 

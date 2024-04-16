@@ -4,11 +4,11 @@
 #include "CapacityModules.hpp"
 
 namespace my_modular {
-	template <typename T, typename A>
+	template <typename T, typename CapStrat>		// w/ C++ 20 consider/requires std::derived_from<ICapacityStrategy> CapStrat
 	class Vector;
 }
 
-template <typename T, typename A>
+template <typename T, typename CapStrat>
 class my_modular::Vector
 {
 private:
@@ -16,6 +16,9 @@ private:
 	int _size;
 	int _capacity;
 	T* _elements;
+
+	// Helper methods
+	void adjust_memory();
 
 public:
 	// Constructors and Destructor
@@ -30,13 +33,13 @@ public:
 	bool is_empty() const { return _size == 0; }
 	T& back() const { return _elements[_size - 1]; }
 	T& front() const { return _elements[0]; }
-	void clear() { _size = 0; A::adjust_capacity(_elements, _size, _capacity); }
 
 	// Methods
 	void push_back(const T& element);
 	void pop_back();
 	void insert(int index, const T& element);
 	void erase(int index);
+	void clear();
 
 	// Operators
 	T& operator [](int index) { return _elements[index]; }
@@ -44,16 +47,27 @@ public:
 	Vector& operator =(const Vector& source);
 };
 
-template<typename T, typename A>
-inline my_modular::Vector<T, A>::Vector(int initial_capacity)
+template<typename T, typename CapStrat>
+inline void my_modular::Vector<T, CapStrat>::adjust_memory()
+{
+	T* new_elements = new T[_capacity];
+	for (int i = 0; i < _size; i++) {
+		new_elements[i] = _elements[i];
+	}
+	delete[] _elements;
+	_elements = new_elements;
+}
+
+template<typename T, typename CapStrat>
+inline my_modular::Vector<T, CapStrat>::Vector(int initial_capacity)
 {
 	_size = 0;
 	_capacity = initial_capacity;
 	_elements = new T[_capacity];
 }
 
-template<typename T, typename A>
-inline my_modular::Vector<T, A>::Vector(int size, const T& inital_values)
+template<typename T, typename CapStrat>
+inline my_modular::Vector<T, CapStrat>::Vector(int size, const T& inital_values)
 {
 	_size = size;
 	_capacity = size * 2;
@@ -63,8 +77,8 @@ inline my_modular::Vector<T, A>::Vector(int size, const T& inital_values)
 	}
 }
 
-template<typename T, typename A>
-inline my_modular::Vector<T, A>::Vector(const Vector& source)
+template<typename T, typename CapStrat>
+inline my_modular::Vector<T, CapStrat>::Vector(const Vector& source)
 {
 	_size = source._size;
 	_capacity = source._capacity;
@@ -74,35 +88,38 @@ inline my_modular::Vector<T, A>::Vector(const Vector& source)
 	}
 }
 
-template<typename T, typename A>
-inline my_modular::Vector<T, A>::~Vector()
+template<typename T, typename CapStrat>
+inline my_modular::Vector<T, CapStrat>::~Vector()
 {
 	delete[] _elements;
 }
 
-template<typename T, typename A>
-inline void my_modular::Vector<T, A>::push_back(const T& element)
+template<typename T, typename CapStrat>
+inline void my_modular::Vector<T, CapStrat>::push_back(const T& element)
 {
-	A::adjust_capacity(_elements, _size, _capacity);
+	if (CapStrat::adjust_capacity(_size, _capacity))
+		adjust_memory();
 
 	_elements[_size] = element;
 	_size++;
 }
 
-template<typename T, typename A>
-inline void my_modular::Vector<T, A>::pop_back()
+template<typename T, typename CapStrat>
+inline void my_modular::Vector<T, CapStrat>::pop_back()
 {
 	if (_size > 0) {
 		_size--;
 	}
 
-	A::adjust_capacity(_elements, _size, _capacity);
+	if (CapStrat::adjust_capacity(_size, _capacity))
+		adjust_memory();
 }
 
-template<typename T, typename A>
-inline void my_modular::Vector<T, A>::insert(int index, const T& element)
+template<typename T, typename CapStrat>
+inline void my_modular::Vector<T, CapStrat>::insert(int index, const T& element)
 {
-	A::adjust_capacity(_elements, _size, _capacity);
+	if (CapStrat::adjust_capacity(_size, _capacity))
+		adjust_memory();
 
 	for (int i = _size; i >= index; i--) {
 		_elements[i] = _elements[i - 1];
@@ -111,19 +128,28 @@ inline void my_modular::Vector<T, A>::insert(int index, const T& element)
 	_size++;
 }
 
-template<typename T, typename A>
-inline void my_modular::Vector<T, A>::erase(int index)
+template<typename T, typename CapStrat>
+inline void my_modular::Vector<T, CapStrat>::erase(int index)
 {
 	_size--;
 	for (int i = index; i < _size; i++) {
 		_elements[i] = _elements[i + 1];
 	}
 
-	A::adjust_capacity(_elements, _size, _capacity);
+	if (CapStrat::adjust_capacity(_size, _capacity))
+		adjust_memory();
 }
 
-template<typename T, typename A>
-inline my_modular::Vector<T, A>& my_modular::Vector<T, A>::operator=(const my_modular::Vector<T, A>& source)
+template<typename T, typename CapStrat>
+inline void my_modular::Vector<T, CapStrat>::clear()
+{
+	_size = 0; 
+	if (CapStrat::adjust_capacity(_size, _capacity))
+		adjust_memory();
+}
+
+template<typename T, typename CapStrat>
+inline my_modular::Vector<T, CapStrat>& my_modular::Vector<T, CapStrat>::operator=(const my_modular::Vector<T, CapStrat>& source)
 {
 	if (source._size > _size) {
 		delete[] _elements;
