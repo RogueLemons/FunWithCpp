@@ -5,7 +5,8 @@
 using std::cout;
 using std::endl;
 
-static void print(const my::Vector<double>& vec) {
+template <typename T>
+static void print(const my::Vector<T>& vec) {
     cout << "Size: " << vec.size() << ", Cap: " << vec.capacity();
     cout << ", Elements: [";
     for (int i = 0; i < vec.size(); i++) {

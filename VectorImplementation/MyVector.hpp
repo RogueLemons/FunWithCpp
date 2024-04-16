@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdexcept>
+
 namespace my {
 	template <typename T>
 	class Vector;
