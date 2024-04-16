@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include "MyVector.hpp"
+#include "MyModularVector.hpp"
 using std::cout;
 using std::endl;
 
@@ -20,10 +21,23 @@ static void print(const my::Vector<T>& vec) {
     cout << " ] " << endl << endl;
 }
 
+template <typename T, typename A>
+static void print(const my_modular::Vector<T, A>& vec) {
+    cout << "Size: " << vec.size() << ", Cap: " << vec.capacity();
+    cout << ", Elements: [";
+    for (int i = 0; i < vec.size(); i++) {
+        cout << " " << vec[i];
+        if (i != vec.size() - 1)
+            cout << ",";
+    }
+    cout << " ] " << endl << endl;
+}
+
 int main()
 {
     try {
         test_my_simple_vector();
+        test_my_modular_vector();
     }
     catch (const std::exception& e) {
         cout << e.what() << endl;
@@ -43,7 +57,7 @@ int main()
 
 void test_my_simple_vector()
 {
-    cout << "\n--- Simple Vector with Manual Capacity Resizing  ---" << endl << endl;
+    cout << "\n--- Simple Vector with Manual Cap. Resizing  ---" << endl << endl;
 
     int initial_capacity = 5;
     my::Vector<double> vec(initial_capacity);
@@ -87,5 +101,47 @@ void test_my_simple_vector()
 
     cout << "Free up memory by reducing capacity:" << endl;
     vec.adjust_capacity();
+    print(vec);
+}
+
+void test_my_modular_vector()
+{
+    cout << "\n--- Vector with Modular Automatic Cap. Resizing ---" << endl << endl;
+
+    int initial_capacity = 4;
+    my_modular::Vector<double, cap_adj::IncreaseOnly<double>> vec(initial_capacity);
+    cout << "Empty vector with initial capacity " << initial_capacity << ": " << endl;
+    print(vec);
+
+    cout << "Add some values:" << endl;
+    vec.push_back(1.2);
+    vec.push_back(2.4);
+    vec.push_back(3.6);
+    vec.push_back(4.8);
+    vec.push_back(6.0);
+    vec.push_back(7.2);
+    print(vec);
+
+    int index = 2;
+    cout << "Erase at index " << index << ":" << endl;
+    vec.erase(index);
+    print(vec);
+
+    index = 1;
+    cout << "Insert at index " << index << ":" << endl;
+    vec.insert(index, 7.7);
+    print(vec);
+
+    index = 4;
+    while (vec.size() != vec.capacity())
+        vec.push_back(42);
+    double value = 7.7;
+    cout << "Insert " << value << " at index " << index << " (with capacity increase) : " << endl;
+    vec.insert(index, 7.7);
+    print(vec);
+
+    while (vec.size() > 3)
+        vec.pop_back();
+    cout << "Pop values until size is 3" << endl;
     print(vec);
 }
