@@ -4,7 +4,7 @@
 #include "CapacityModules.hpp"
 
 namespace my_modular {
-	template <typename T, typename CapStrat>		// w/ C++ 20 consider/requires std::derived_from<ICapacityStrategy> CapStrat
+	template <typename T, typename CapStrat>		// Consider requires std::derived_from<ICapacityStrategy> CapStrat
 	class Vector;
 }
 

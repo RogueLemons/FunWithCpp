@@ -13,6 +13,7 @@ namespace cap_adj {
 	};
 
 	struct IncreaseOnly {								// w/ C++ 20: template <IncreaseFactor F = {}> for even more modularity, where IncreaseFactor is a struct containing a float factor
+	struct IncreaseOnly {									// Consider template <IncreaseFactor F = {}> for even more modularity, where IncreaseFactor is a struct containing a float factor
 		constexpr static bool adjust_capacity(int size, int& capacity) {
 			if (size == capacity) {
 				capacity = capacity * 1.5f;				// w/ C++20: * F.factor;

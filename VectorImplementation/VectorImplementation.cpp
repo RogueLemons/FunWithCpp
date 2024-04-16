@@ -11,7 +11,7 @@ using std::endl;
 static void test_my_simple_vector();
 static void test_my_modular_vector();
 template <typename V>
-static void print_vector(const V& vec);
+static void print_vector(const V& vec);     // Consider requires concept
 
 int main()
 {
