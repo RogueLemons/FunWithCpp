@@ -79,7 +79,7 @@ void test_my_simple_vector()
     cout << "Pop values until size is 3" << endl;
     print_vector(vec);
 
-    cout << "Free up memory by reducing capacity:" << endl;
+    cout << "Free up memory by manually reducing capacity:" << endl;
     vec.adjust_capacity();
     print_vector(vec);
 }

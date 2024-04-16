@@ -162,7 +162,7 @@ inline void my::Vector<T>::erase(int index)
 template<typename T>
 inline void my::Vector<T>::adjust_capacity()
 {
-	adjust_capacity(_size * 2);
+	adjust_capacity(std::max(2, _size * 2));
 }
 
 template<typename T>
@@ -170,6 +170,8 @@ inline void my::Vector<T>::adjust_capacity(int capacity)
 {
 	if (capacity < _size)
 		throw std::invalid_argument("Cannot decrease capacity lower than current size.");
+	if (capacity < 1)
+		throw std::invalid_argument("Cannot have a capacity less than 1.");
 
 	_capacity = capacity;
 	T* new_elements = new T[_capacity];
