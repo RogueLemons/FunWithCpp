@@ -1,6 +1,6 @@
 #pragma once
 
-namespace cap_adj {
+namespace cap_strat {
 
 	struct Continous {
 		constexpr static bool adjust_capacity(int size, int& capacity) {

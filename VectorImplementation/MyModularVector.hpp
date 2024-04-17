@@ -50,12 +50,14 @@ public:
 template<typename T, typename CapStrat>
 inline void my_modular::Vector<T, CapStrat>::adjust_memory()
 {
-	T* new_elements = new T[_capacity];
-	for (int i = 0; i < _size; i++) {
-		new_elements[i] = _elements[i];
+	if (CapStrat::adjust_capacity(_size, _capacity)) {
+		T* new_elements = new T[_capacity];
+		for (int i = 0; i < _size; i++) {
+			new_elements[i] = _elements[i];
+		}
+		delete[] _elements;
+		_elements = new_elements;
 	}
-	delete[] _elements;
-	_elements = new_elements;
 }
 
 template<typename T, typename CapStrat>
@@ -97,8 +99,7 @@ inline my_modular::Vector<T, CapStrat>::~Vector()
 template<typename T, typename CapStrat>
 inline void my_modular::Vector<T, CapStrat>::push_back(const T& element)
 {
-	if (CapStrat::adjust_capacity(_size, _capacity))
-		adjust_memory();
+	adjust_memory();
 
 	_elements[_size] = element;
 	_size++;
@@ -111,15 +112,13 @@ inline void my_modular::Vector<T, CapStrat>::pop_back()
 		_size--;
 	}
 
-	if (CapStrat::adjust_capacity(_size, _capacity))
-		adjust_memory();
+	adjust_memory();
 }
 
 template<typename T, typename CapStrat>
 inline void my_modular::Vector<T, CapStrat>::insert(int index, const T& element)
 {
-	if (CapStrat::adjust_capacity(_size, _capacity))
-		adjust_memory();
+	adjust_memory();
 
 	for (int i = _size; i >= index; i--) {
 		_elements[i] = _elements[i - 1];
@@ -136,16 +135,14 @@ inline void my_modular::Vector<T, CapStrat>::erase(int index)
 		_elements[i] = _elements[i + 1];
 	}
 
-	if (CapStrat::adjust_capacity(_size, _capacity))
-		adjust_memory();
+	adjust_memory();
 }
 
 template<typename T, typename CapStrat>
 inline void my_modular::Vector<T, CapStrat>::clear()
 {
 	_size = 0; 
-	if (CapStrat::adjust_capacity(_size, _capacity))
-		adjust_memory();
+	adjust_memory();
 }
 
 template<typename T, typename CapStrat>
