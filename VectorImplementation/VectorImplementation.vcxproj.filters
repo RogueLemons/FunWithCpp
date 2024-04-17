@@ -23,5 +23,11 @@
     <ClInclude Include="MyVector.hpp">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MyModularVector.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CapacityModules.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
