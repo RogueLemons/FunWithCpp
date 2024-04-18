@@ -1,5 +1,5 @@
-#include "ListNode.h"
 #include <stdio.h>
+#include "ListNode.h"
 
 Node* new_node(int value)
 {
