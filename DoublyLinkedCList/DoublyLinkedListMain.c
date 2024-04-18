@@ -31,7 +31,7 @@ int main() {
 	print_node_list(list_node);
 
 	int index = 2;
-	printf("Element at index %d is:\t%d \n", index, node_at_index(list_node, index)->value);
+	printf("\nElement at index %d is:\t%d \n", index, node_at_index(list_node, index)->value);
 	printf("The first element is:\t%d \n", node_first(list_node)->value);
 	printf("The last element is:\t%d \n", node_last(list_node)->value);
 
