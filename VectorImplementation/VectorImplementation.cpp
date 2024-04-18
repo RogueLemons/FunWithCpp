@@ -4,8 +4,7 @@
 #include <iostream>
 #include "MyVector.hpp"
 #include "MyModularVector.hpp"
-using std::cout;
-using std::endl;
+using std::cout, std::endl;
 
 // Functions
 static void test_my_simple_vector();
