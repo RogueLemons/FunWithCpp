@@ -109,6 +109,8 @@ Node* node_at_index(Node* head, int index)
 	Node* temp = head;
 	for (int i = 0; i < index; i++) {
 		temp = temp->next;
+		if (temp == NULL)
+			return NULL;
 	}
 	return temp;
 }
