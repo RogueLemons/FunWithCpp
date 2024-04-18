@@ -71,10 +71,7 @@ Node* node_last(Node* node)
 
 void node_append(Node* head, Node* node)
 {
-	Node* temp = head;
-	while (temp->next != NULL) {
-		temp = temp->next;
-	}
+	Node* temp = node_last(head);
 	temp->next = node;
 }
 
