@@ -39,4 +39,23 @@ int node_length(Node* head)
 	return l;
 }
 
+void node_append(Node* head, Node* node)
+{
+	Node* temp = head;
+	while (temp->next != NULL) {
+		temp = temp->next;
+	}
+	temp->next = node;
+}
+
+void node_prepend(Node* head, Node* node)
+{
+	Node* temp = head;
+	while (temp->prev != NULL) {
+		temp = temp->prev;
+	}
+	temp->prev = node;
+	node->next = temp;
+}
+
 

@@ -8,6 +8,8 @@ typedef struct {
 
 	// Function pointers
 	int (*length)(Node* head);
+	void (*append)(Node* head, Node* node);
+	void (*prepend)(Node* head, Node* node);
 } Node;
 
 // Node "constructor" and "destructor"
@@ -16,3 +18,5 @@ void delete_node(Node* node);
 
 // Node methods
 int node_length(Node* head);
+void node_append(Node* head, Node* node);
+void node_prepend(Node* head, Node* node);
