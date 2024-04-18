@@ -1,5 +1,6 @@
 #include "ListNode.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 Node* new_node(int value)
 {
@@ -9,6 +10,8 @@ Node* new_node(int value)
 	new_node->next = NULL;
 
 	new_node->length = node_length;
+	new_node->append = node_append;
+	new_node->prepend = node_prepend;
 
 	return new_node;
 }
@@ -48,14 +51,15 @@ void node_append(Node* head, Node* node)
 	temp->next = node;
 }
 
-void node_prepend(Node* head, Node* node)
+void node_prepend(Node** head, Node* node)
 {
-	Node* temp = head;
+	Node* temp = *head;
 	while (temp->prev != NULL) {
 		temp = temp->prev;
 	}
 	temp->prev = node;
 	node->next = temp;
+	*head = node;
 }
 
 

@@ -1,15 +1,15 @@
 #pragma once
 
-typedef struct {
+typedef struct Node {
 	// Fields
 	int value;
-	Node* prev;
-	Node* next;
+	struct Node* prev;
+	struct Node* next;
 
 	// Function pointers
-	int (*length)(Node* head);
-	void (*append)(Node* head, Node* node);
-	void (*prepend)(Node* head, Node* node);
+	int (*length)(struct Node* head);
+	void (*append)(struct Node* head, struct Node* node);
+	void (*prepend)(struct Node** head, struct Node* node);
 } Node;
 
 // Node "constructor" and "destructor"
@@ -19,4 +19,4 @@ void delete_node(Node* node);
 // Node methods
 int node_length(Node* head);
 void node_append(Node* head, Node* node);
-void node_prepend(Node* head, Node* node);
+void node_prepend(Node** head, Node* node);
