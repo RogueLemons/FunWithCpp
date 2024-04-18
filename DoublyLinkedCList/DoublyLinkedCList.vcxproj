@@ -127,7 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="DoublyLinkedCList.c" />
+    <ClCompile Include="DoublyLinkedListMain.c" />
     <ClCompile Include="ListNode.c" />
   </ItemGroup>
   <ItemGroup>
