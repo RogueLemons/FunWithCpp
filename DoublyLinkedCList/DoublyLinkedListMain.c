@@ -2,9 +2,23 @@
 #include <stdio.h>
 #include "ListNode.h"
 
+void print_node_list(Node* head) {
+	if (head == NULL) {
+		printf("List is Empty: [ ]\n");
+		return;
+	}
+
+	printf("Doubly Linked List: [ ");
+	Node* temp = head;
+	while (temp->next != NULL) {
+		printf("%d, ", temp->value);
+		temp = temp->next;
+	}
+	printf("%d ]\n", temp->value);
+}
+
 int main() {
-	printf("Hello, World!\n");
-	printf("%d\n\n", 5);
+	printf("---Testing List of Nodes---\n\n");
 
 	Node* list_node = new_node(1);
 	list_node->append(list_node, new_node(2));
@@ -15,7 +29,7 @@ int main() {
 	list_node->prepend(&list_node, new_node(0));
 	list_node->prepend(&list_node, new_node(-1));
 
-	int l = list_node->length(list_node);
+	print_node_list(list_node);
 	printf("%d", l);
 
 	return 0;
