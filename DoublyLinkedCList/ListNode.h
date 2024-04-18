@@ -10,6 +10,7 @@ typedef struct Node {
 	int (*length)(struct Node* head);
 	void (*append)(struct Node* head, struct Node* node);
 	void (*prepend)(struct Node** head, struct Node* node);
+	void (*insert_next)(struct Node** node, struct Node* head_insert);
 } Node;
 
 // Node "constructor" and "destructor"
@@ -20,3 +21,4 @@ void delete_nodes(Node* node);
 int node_length(Node* head);
 void node_append(Node* head, Node* node);
 void node_prepend(Node** head, Node* node);
+void node_insert_next(Node* node, Node* head_insert);

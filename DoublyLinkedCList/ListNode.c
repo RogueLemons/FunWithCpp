@@ -12,6 +12,7 @@ Node* new_node(int value)
 	new_node->length = node_length;
 	new_node->append = node_append;
 	new_node->prepend = node_prepend;
+	new_node->insert_next = node_insert_next;
 
 	return new_node;
 }
@@ -64,6 +65,22 @@ void node_prepend(Node** head, Node* node)
 	temp->prev = node;
 	node->next = temp;
 	*head = node;
+}
+
+void node_insert_next(Node* node, Node* head_insert)
+{
+	if (node->next == NULL) {
+		node->next = head_insert;
+		return;
+	}
+
+	Node* temp = head_insert;
+	while (temp->next != NULL) {
+		temp = temp->next;
+	}
+	temp->next = node->next;
+	head_insert->prev = node;
+	node->next = head_insert;
 }
 
 
