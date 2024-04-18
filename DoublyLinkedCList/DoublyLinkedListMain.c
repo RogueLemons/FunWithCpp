@@ -30,7 +30,8 @@ int main() {
 	list_node->prepend(&list_node, new_node(-1));
 
 	print_node_list(list_node);
-	printf("%d", l);
+	delete_nodes(list_node->next->next);
+	print_node_list(list_node);
 
 	return 0;
 }

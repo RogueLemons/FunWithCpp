@@ -16,15 +16,19 @@ Node* new_node(int value)
 	return new_node;
 }
 
-void delete_node(Node* node)
+void delete_nodes(Node* node)
 {
 	Node* current = node;
 	Node* next = node->next;
 	while (next != NULL) {
+		current = next;
 		next = current->next;
 		free(current);
 	}
-	free(current);
+	if (node->prev != NULL) {
+		node->prev->next = NULL;
+	}
+	free(node);
 }
 
 int node_length(Node* head)
