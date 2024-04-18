@@ -10,9 +10,13 @@ Node* new_node(int value)
 	new_node->next = NULL;
 
 	new_node->length = node_length;
+	new_node->first = node_first;
+	new_node->last = node_last;
 	new_node->append = node_append;
 	new_node->prepend = node_prepend;
 	new_node->insert_next = node_insert_next;
+	new_node->at_index = node_at_index;
+	new_node->insert_at = node_insert_at;
 
 	return new_node;
 }
@@ -47,6 +51,24 @@ int node_length(Node* head)
 	return l;
 }
 
+Node* node_first(Node* node)
+{
+	Node* temp = node;
+	while (temp->prev != NULL) {
+		temp = temp->prev;
+	}
+	return temp;
+}
+
+Node* node_last(Node* node)
+{
+	Node* temp = node;
+	while (temp->next != NULL) {
+		temp = temp->next;
+	}
+	return temp;
+}
+
 void node_append(Node* head, Node* node)
 {
 	Node* temp = head;
@@ -73,7 +95,6 @@ void node_insert_next(Node* node, Node* head_insert)
 		node->next = head_insert;
 		return;
 	}
-
 	Node* temp = head_insert;
 	while (temp->next != NULL) {
 		temp = temp->next;
@@ -81,6 +102,21 @@ void node_insert_next(Node* node, Node* head_insert)
 	temp->next = node->next;
 	head_insert->prev = node;
 	node->next = head_insert;
+}
+
+Node* node_at_index(Node* head, int index)
+{
+	Node* temp = head;
+	for (int i = 0; i < index; i++) {
+		temp = temp->next;
+	}
+	return temp;
+}
+
+void node_insert_at(Node* head, int index, Node* node_insert)
+{
+	Node* temp = node_at_index(head, index - 1);
+	node_insert_next(temp, node_insert);
 }
 
 
