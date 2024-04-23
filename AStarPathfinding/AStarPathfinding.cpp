@@ -1,22 +1,20 @@
 // AStarPathfinding.cpp : This file contains the 'main' function. Program execution begins and ends there.
 
 #include <iostream>
+#include <string>
 #include <SFML/Graphics.hpp>
+#include "Engine.h";
 
 int main()
 {
     std::cout << "Hello World!\n";
+    Engine engine(5, 5, 800, 800);
 
-    sf::RenderWindow window(sf::VideoMode(800, 600), "Title");
-    sf::Event event;
+    while (engine.is_running()) {
 
-    while (window.isOpen()) {
-
-        while (window.pollEvent(event)) {
-            if (event.type == sf::Event::Closed) {
-                window.close();
-            }
-        }
+        engine.update();
+        engine.render();
+        engine.display();
 
     }
 
