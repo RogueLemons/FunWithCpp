@@ -2,6 +2,7 @@
 
 #include <SFML/Graphics.hpp>
 #include <vector>
+#include <memory>
 
 class Engine
 {
@@ -19,7 +20,7 @@ public:
 
 private:
 	// Fields
-	sf::RenderWindow _window;
+	std::unique_ptr<sf::RenderWindow> _window;
 	sf::VideoMode _video_mode;
 	sf::Event _event;
 	std::vector<sf::RectangleShape> _squares;

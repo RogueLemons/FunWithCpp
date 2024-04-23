@@ -1,16 +1,23 @@
 #include "Engine.h"
 
 Engine::Engine(unsigned int grid_columns, unsigned int grid_rows, unsigned int window_width, unsigned int window_height)
-    : _video_mode(window_width, window_height)
+    /*: _video_mode(window_width, window_height)
     , _window(_video_mode, "A* Pathfinding")
-    , _event()
+    , _event()*/
 {
+    _video_mode.width = window_width;
+    _video_mode.height = window_height;
+    int fps = 60;
+    _window = std::make_unique<sf::RenderWindow>(_video_mode, "Colliding Polygons 2D");
+    _window->setFramerateLimit(fps);
+
+
     create_squares(grid_rows, grid_columns);
 }
 
 const bool Engine::is_running() const
 {
-    return _window.isOpen();
+    return _window->isOpen();
 }
 
 void Engine::update()
@@ -22,15 +29,15 @@ void Engine::update()
 
 void Engine::render()
 {
-    _window.clear(sf::Color(sf::Color::Black));
+    _window->clear(sf::Color(sf::Color::Black));
     for (auto& square : _squares) {
-        _window.draw(square);
+        _window->draw(square);
     }
 }
 
 void Engine::display()
 {
-    _window.display();
+    _window->display();
 }
 
 sf::RectangleShape& Engine::square_at(unsigned int row, unsigned int column) const
@@ -42,16 +49,16 @@ sf::RectangleShape& Engine::square_at(unsigned int row, unsigned int column) con
 
 void Engine::poll_events()
 {
-    while (_window.pollEvent(_event)) {
+    while (_window->pollEvent(_event)) {
         if (_event.type == sf::Event::Closed) {
-            _window.close();
+            _window->close();
         }
         if (_event.type == sf::Event::KeyPressed) {
 
 
             switch (_event.key.code) {
             case sf::Keyboard::Escape:
-                _window.close();
+                _window->close();
                 break;
             }
 
