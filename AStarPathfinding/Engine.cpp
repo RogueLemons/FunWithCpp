@@ -88,6 +88,9 @@ void Engine::poll_events()
             case sf::Keyboard::Space:
                 _window->close();
                 break;
+            case sf::Keyboard::R:
+                _window->close();
+                break;
             }
         }
     }
