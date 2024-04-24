@@ -41,7 +41,6 @@ void Engine::update()
 {
     _dt = _clock.restart().asSeconds();
     poll_events();
-    update_grid();
 }
 
 void Engine::render()
@@ -94,11 +93,6 @@ void Engine::poll_events()
             }
         }
     }
-}
-
-void Engine::update_grid()
-{
-    // Do stuff
 }
 
 void Engine::create_squares(unsigned int rows, unsigned int columns)
