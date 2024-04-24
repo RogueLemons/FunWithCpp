@@ -1,16 +1,13 @@
 #include "Engine.h"
 
 Engine::Engine(unsigned int grid_columns, unsigned int grid_rows, unsigned int window_width, unsigned int window_height)
-    /*: _video_mode(window_width, window_height)
-    , _window(_video_mode, "A* Pathfinding")
-    , _event()*/
+    : _grid_columns(grid_columns), _grid_rows(grid_rows)
 {
     _video_mode.width = window_width;
     _video_mode.height = window_height;
-    int fps = 60;
-    _window = std::make_unique<sf::RenderWindow>(_video_mode, "Colliding Polygons 2D");
+    _window = std::make_unique<sf::RenderWindow>(_video_mode, "A* Pathfinding");
+    int fps = 30;
     _window->setFramerateLimit(fps);
-
 
     create_squares(grid_rows, grid_columns);
 }
@@ -40,11 +37,10 @@ void Engine::display()
     _window->display();
 }
 
-sf::RectangleShape& Engine::square_at(unsigned int row, unsigned int column) const
+sf::RectangleShape& Engine::square_at(unsigned int row, unsigned int column)
 {
-    // TODO: insert return statement here
-    sf::RectangleShape square;
-    return square;
+    auto index = _grid_columns * column + row;
+    return _squares[index];
 }
 
 void Engine::poll_events()
@@ -70,23 +66,25 @@ void Engine::poll_events()
 void Engine::update_grid()
 {
     // Do stuff
+    square_at(0, 0).setFillColor(sf::Color::Red);
 }
 
 
 
 void Engine::create_squares(unsigned int rows, unsigned int columns)
 {
+    int gridlines_thickness = std::min(_video_mode.width / columns, _video_mode.height / rows) * 0.05f;
     int square_width = (_video_mode.width - (1 + columns) * gridlines_thickness) / columns;
     int square_height = (_video_mode.height - (1 + rows) * gridlines_thickness) / columns;
 
     for (unsigned int i = 0; i < columns; i++) {
         for (unsigned int j = 0; j < rows; j++) {
             sf::RectangleShape square(sf::Vector2f(square_width, square_height));
-            square.setOrigin(sf::Vector2f(square_width / 2, square_height / 2));
-            float x_pos = i * (_video_mode.width / (columns * 1.0f)) + (_video_mode.width * 0.5 / columns);
-            float y_pos = j * (_video_mode.height / (rows * 1.0f)) + (_video_mode.height * 0.5 / rows);
+            square.setOrigin(sf::Vector2f(square_width * 0.5f, square_height * 0.5f));
+            float x_pos = i * (_video_mode.width / (columns * 1.0f)) + (_video_mode.width * 0.5f / columns);
+            float y_pos = j * (_video_mode.height / (rows * 1.0f)) + (_video_mode.height * 0.5f / rows);
             square.setPosition(sf::Vector2f(x_pos, y_pos));
-            square.setFillColor(sf::Color::Blue);
+            square.setFillColor(sf::Color::White);
             _squares.push_back(square);
         }
     }
