@@ -8,7 +8,7 @@
 int main()
 {
     std::cout << "Hello World!\n";
-    Engine engine(5, 5, 800, 800);
+    Engine engine(5, 5);
 
     while (engine.is_running()) {
 

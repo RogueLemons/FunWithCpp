@@ -66,7 +66,7 @@ void Engine::poll_events()
 void Engine::update_grid()
 {
     // Do stuff
-    square_at(0, 0).setFillColor(sf::Color::Red);
+    square_at(2, 3).setFillColor(sf::Color::Red);
 }
 
 
