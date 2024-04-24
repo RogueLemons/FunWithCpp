@@ -14,7 +14,7 @@ int main()
     std::cout << "Escape: Exit application." << std::endl;
     std::cout << std::endl;
     
-    Engine engine(10, 10);
+    Engine engine;
     while (engine.is_running()) {
         engine.update();
         engine.render();

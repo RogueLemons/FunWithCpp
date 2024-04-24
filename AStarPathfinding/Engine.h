@@ -8,7 +8,7 @@ class Engine
 {
 public:
 	// Constructor
-	Engine(unsigned int grid_columns, unsigned int grid_rows, unsigned int window_width = 800, unsigned int window_height = 800);
+	Engine(unsigned int grid_columns = 10, unsigned int grid_rows = 10, unsigned int window_width = 800, unsigned int window_height = 800);
 
 	// Accessors
 	const bool is_running() const;
