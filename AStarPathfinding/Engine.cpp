@@ -88,4 +88,5 @@ void Engine::create_squares(unsigned int rows, unsigned int columns)
             _squares.push_back(square);
         }
     }
+    _squares.shrink_to_fit();
 }
