@@ -34,17 +34,6 @@ private:
 	void poll_events();
 	void create_squares(unsigned int rows, unsigned int columns);
 	sf::RectangleShape& coursor_square();
-
-	// Friend classes
-	friend class Pathfinder;
 };
 
-class Pathfinder 
-{
-	// Constructor
-	Pathfinder(const Engine& engine);
-
-	// Fields
-	const Engine& engine;
-};
 
