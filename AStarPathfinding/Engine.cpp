@@ -75,7 +75,7 @@ void Engine::create_squares(unsigned int rows, unsigned int columns)
 {
     int gridlines_thickness = std::min(_video_mode.width / columns, _video_mode.height / rows) * 0.05f;
     int square_width = (_video_mode.width - (1 + columns) * gridlines_thickness) / columns;
-    int square_height = (_video_mode.height - (1 + rows) * gridlines_thickness) / columns;
+    int square_height = (_video_mode.height - (1 + rows) * gridlines_thickness) / rows;
 
     for (unsigned int i = 0; i < columns; i++) {
         for (unsigned int j = 0; j < rows; j++) {
