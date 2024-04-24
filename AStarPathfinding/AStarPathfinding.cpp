@@ -4,7 +4,6 @@
 #include <string>
 #include <SFML/Graphics.hpp>
 #include "Engine.h"
-#include "Pathfinder.h"
 
 int main()
 {
