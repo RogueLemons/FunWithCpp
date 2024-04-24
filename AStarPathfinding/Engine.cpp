@@ -1,5 +1,21 @@
 #include "Engine.h"
 
+namespace {
+    void set_start_finish(sf::RectangleShape& square) {
+        if (square.getFillColor() == sf::Color::Red)
+            square.setFillColor(sf::Color::White);
+        else
+            square.setFillColor(sf::Color::Red);
+    }
+
+    void set_obstacle(sf::RectangleShape& square) {
+        if (square.getFillColor() == sf::Color::Black)
+            square.setFillColor(sf::Color::White);
+        else
+            square.setFillColor(sf::Color::Black);
+    }
+}
+
 Engine::Engine(unsigned int grid_columns, unsigned int grid_rows, unsigned int window_width, unsigned int window_height)
     : _grid_columns(grid_columns), _grid_rows(grid_rows)
 {
@@ -49,16 +65,26 @@ void Engine::poll_events()
         if (_event.type == sf::Event::Closed) {
             _window->close();
         }
+
+        if (_event.type == sf::Event::MouseButtonPressed) {
+            auto& square = coursor_square();
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Left)) {
+                set_obstacle(square);
+            }
+            if (sf::Mouse::isButtonPressed(sf::Mouse::Right)) {
+                set_start_finish(square);
+            }
+        }
+
         if (_event.type == sf::Event::KeyPressed) {
-
-
             switch (_event.key.code) {
             case sf::Keyboard::Escape:
                 _window->close();
                 break;
+            case sf::Keyboard::Space:
+                _window->close();
+                break;
             }
-
-
         }
     }
 }
@@ -66,10 +92,7 @@ void Engine::poll_events()
 void Engine::update_grid()
 {
     // Do stuff
-    square_at(2, 3).setFillColor(sf::Color::Red);
 }
-
-
 
 void Engine::create_squares(unsigned int rows, unsigned int columns)
 {
@@ -89,4 +112,13 @@ void Engine::create_squares(unsigned int rows, unsigned int columns)
         }
     }
     _squares.shrink_to_fit();
+}
+
+
+sf::RectangleShape& Engine::coursor_square() {
+    auto pixel_pos = sf::Mouse::getPosition() - _window->getPosition();
+    pixel_pos -= {5, 40}; // Window bar offset
+    int row = ((float)pixel_pos.y / (float)_video_mode.height) * _grid_rows;
+    int column = ((float)pixel_pos.x / (float)_video_mode.width) * _grid_columns;
+    return square_at(row, column);
 }

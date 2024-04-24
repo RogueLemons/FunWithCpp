@@ -3,19 +3,21 @@
 #include <iostream>
 #include <string>
 #include <SFML/Graphics.hpp>
-#include "Engine.h";
+#include "Engine.h"
+#include "Pathfinder.h"
 
 int main()
 {
-    std::cout << "Hello World!\n";
-    Engine engine(5, 5);
-
+    std::cout << "Left mouse button: Set obstacles." << std::endl;
+    std::cout << "Right mouse button: Set start and finish." << std::endl;
+    std::cout << "Spacebar: Find shortest path." << std::endl;
+    std::cout << "Escape: Exit application." << std::endl;
+    
+    Engine engine(10, 10);
     while (engine.is_running()) {
-
         engine.update();
         engine.render();
         engine.display();
-
     }
 
 }

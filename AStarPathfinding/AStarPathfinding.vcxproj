@@ -136,9 +136,11 @@
   <ItemGroup>
     <ClCompile Include="AStarPathfinding.cpp" />
     <ClCompile Include="Engine.cpp" />
+    <ClCompile Include="Pathfinder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine.h" />
+    <ClInclude Include="Pathfinder.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

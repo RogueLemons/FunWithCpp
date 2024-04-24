@@ -34,5 +34,6 @@ private:
 	void poll_events();
 	void update_grid();
 	void create_squares(unsigned int rows, unsigned int columns);
+	sf::RectangleShape& coursor_square();
 };
 
