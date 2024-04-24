@@ -12,6 +12,7 @@ int main()
     std::cout << "Right mouse button: Set start and finish." << std::endl;
     std::cout << "Spacebar: Find shortest path." << std::endl;
     std::cout << "Escape: Exit application." << std::endl;
+    std::cout << std::endl;
     
     Engine engine(10, 10);
     while (engine.is_running()) {
