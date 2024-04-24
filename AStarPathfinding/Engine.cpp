@@ -1,18 +1,22 @@
 #include "Engine.h"
 
+#define PATH sf::Color::Cyan
+#define BLANK sf::Color::White
+#define OBSTACLE sf::Color::Black
+
 namespace {
     void set_start_finish(sf::RectangleShape& square) {
-        if (square.getFillColor() == sf::Color::Red)
-            square.setFillColor(sf::Color::White);
+        if (square.getFillColor() == PATH)
+            square.setFillColor(BLANK);
         else
-            square.setFillColor(sf::Color::Red);
+            square.setFillColor(PATH);
     }
 
     void set_obstacle(sf::RectangleShape& square) {
-        if (square.getFillColor() == sf::Color::Black)
-            square.setFillColor(sf::Color::White);
+        if (square.getFillColor() == OBSTACLE)
+            square.setFillColor(BLANK);
         else
-            square.setFillColor(sf::Color::Black);
+            square.setFillColor(OBSTACLE);
     }
 }
 
@@ -24,7 +28,7 @@ Engine::Engine(unsigned int grid_columns, unsigned int grid_rows, unsigned int w
     _window = std::make_unique<sf::RenderWindow>(_video_mode, "A* Pathfinding");
     int fps = 30;
     _window->setFramerateLimit(fps);
-
+    
     create_squares(grid_rows, grid_columns);
 }
 
