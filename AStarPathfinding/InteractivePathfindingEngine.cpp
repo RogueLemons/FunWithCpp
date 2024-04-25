@@ -130,7 +130,7 @@ void InteractivePathfindingEngine::reset_grid()
     }
 }
 
-StartAndFinish InteractivePathfindingEngine::get_start_and_finish()
+StartAndFinish InteractivePathfindingEngine::start_and_finish()
 {
     int path_points = 0;
     Pos start = { 0, 0 }, finish = { _grid_rows - 1, _grid_columns - 1};
@@ -147,22 +147,61 @@ StartAndFinish InteractivePathfindingEngine::get_start_and_finish()
         }
     }
     if (path_points < 2)
-        square_at(finish.row, finish.column).setFillColor(PATH);
+        square_at(finish.row, finish.col).setFillColor(PATH);
     if (path_points < 1)
-        square_at(start.row, start.column).setFillColor(PATH);
+        square_at(start.row, start.col).setFillColor(PATH);
 
     return { start, finish };
 }
 
 Pathfinder::Pathfinder(InteractivePathfindingEngine* engine) : _engine(engine)
 {
-    auto path_points = _engine->get_start_and_finish();
+    auto path_points = _engine->start_and_finish();
     _start = path_points.start;
     _finish = path_points.finish;
 }
 
+namespace {
+    struct Node {
+        Pos Pos = { 0, 0 };
+        int G = 0; // Goal cost
+        int H = 0; // Heuristic cost
+        int F() { return G + H; }
+        Node* Connection = nullptr;
+    };
+}
+
 void Pathfinder::a_star()
 {
-    _engine->square_at(_start.row, _start.column).setFillColor(sf::Color::Red);
-    _engine->square_at(_finish.row, _finish.column).setFillColor(sf::Color::Red);
+    /*
+    _engine->square_at(_start.row, _start.col).setFillColor(sf::Color::Red);
+    _engine->square_at(_finish.row, _finish.col).setFillColor(sf::Color::Red);
+
+    auto wn1 = WalkableNeighbors({ 0, 0 });
+    auto wn2 = WalkableNeighbors({ 5, 5 });
+    auto wn3 = WalkableNeighbors({ 9, 9 });
+    wn1.insert(std::end(wn1), std::begin(wn2), std::end(wn2));
+    wn1.insert(std::end(wn1), std::begin(wn3), std::end(wn3));
+    for (auto& square : wn1) {
+        _engine->square_at(square.row, square.col).setFillColor(sf::Color::Green);
+    }
+    */
+}
+
+std::vector<Pos> Pathfinder::walkable_neighbors(Pos pos) const
+{
+    std::vector<Pos> walkable_neighbors;
+    for (int r = -1; r <= 1; r++) {
+        for (int c = -1; c <= 1; c++) {
+            if (r == 0 && c == 0)
+                continue;
+            Pos neighbor = { pos.row + r, pos.col + c };
+            if (neighbor.row < 0 || neighbor.col < 0 || neighbor.row >= _engine->_grid_rows || neighbor.col >= _engine->_grid_columns)
+                continue;
+            if (_engine->square_at(neighbor.row, neighbor.col).getFillColor() == OBSTACLE)
+                continue;
+            walkable_neighbors.push_back(neighbor);
+        }
+    }
+    return walkable_neighbors;
 }

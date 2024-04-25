@@ -6,7 +6,7 @@
 
 struct Pos {
 	unsigned int row;
-	unsigned int column;
+	unsigned int col;
 };
 
 struct StartAndFinish {
@@ -45,7 +45,7 @@ private:
 	void create_squares(unsigned int rows, unsigned int columns);
 	sf::RectangleShape& coursor_square();
 	void reset_grid();
-	StartAndFinish get_start_and_finish();
+	StartAndFinish start_and_finish();
 
 	// Friends
 	friend class Pathfinder;
@@ -58,6 +58,8 @@ public:
 	Pos _start;
 	Pos _finish;
 	void a_star();
+private:
+	std::vector<Pos> walkable_neighbors(Pos pos) const;
 };
 
 
