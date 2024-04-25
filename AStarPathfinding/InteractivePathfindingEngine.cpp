@@ -1,4 +1,4 @@
-#include "Engine.h"
+#include "InteractivePathfindingEngine.h"
 
 #define PATH sf::Color::Cyan
 #define BLANK sf::Color::White
