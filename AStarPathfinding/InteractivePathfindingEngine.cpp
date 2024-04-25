@@ -154,9 +154,8 @@ StartAndFinish InteractivePathfindingEngine::get_start_and_finish()
     return { start, finish };
 }
 
-Pathfinder::Pathfinder(InteractivePathfindingEngine* engine)
+Pathfinder::Pathfinder(InteractivePathfindingEngine* engine) : _engine(engine)
 {
-    _engine = engine;
     auto path_points = _engine->get_start_and_finish();
     _start = path_points.start;
     _finish = path_points.finish;
