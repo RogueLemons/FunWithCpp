@@ -140,9 +140,9 @@ StartAndFinish InteractivePathfindingEngine::get_start_and_finish()
         if (square.getFillColor() == PATH) {
             path_points++;
             if (path_points == 1)
-                start = { i / _grid_columns, i % _grid_rows };
+                start = { i % _grid_rows, i / _grid_rows };
             if (path_points == 2)
-                finish = { i / _grid_columns, i % _grid_rows };
+                finish = { i % _grid_rows, i / _grid_rows };
             if (path_points > 2)
                 square.setFillColor(BLANK);
         }
