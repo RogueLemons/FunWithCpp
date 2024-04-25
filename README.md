@@ -1,5 +1,5 @@
 # FunWithCpp
-Implementing code types in C++. Includes:
+Implementing code types and solving problems in C++. Includes:
 
 - BigInt type based on strings
 - Homemade Vector class
