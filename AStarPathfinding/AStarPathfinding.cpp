@@ -12,7 +12,7 @@ int main()
     std::cout << "R: Reset grid." << std::endl;
     std::cout << std::endl;
     
-    InteractivePathfindingEngine engine(5, 10);
+    InteractivePathfindingEngine engine;
     while (engine.is_running()) {
         engine.update();
         engine.render();
