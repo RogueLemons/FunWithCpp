@@ -4,11 +4,21 @@
 #include <vector>
 #include <memory>
 
-class Engine
+struct Pos {
+	unsigned int row;
+	unsigned int column;
+};
+
+struct StartAndFinish {
+	Pos start;
+	Pos finish;
+};
+
+class InteractivePathfindingEngine
 {
 public:
 	// Constructor
-	Engine(unsigned int grid_columns = 10, unsigned int grid_rows = 10, unsigned int window_width = 800, unsigned int window_height = 800);
+	InteractivePathfindingEngine(unsigned int grid_columns = 10, unsigned int grid_rows = 10, unsigned int window_width = 800, unsigned int window_height = 800);
 
 	// Accessors
 	const bool is_running() const;
@@ -34,6 +44,11 @@ private:
 	void poll_events();
 	void create_squares(unsigned int rows, unsigned int columns);
 	sf::RectangleShape& coursor_square();
+	void reset_grid();
+	StartAndFinish get_start_and_finish();
+
+	// Pathfinding
+	void a_star(const StartAndFinish& path_points);
 };
 
 

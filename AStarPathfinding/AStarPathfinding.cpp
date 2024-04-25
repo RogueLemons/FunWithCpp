@@ -14,7 +14,7 @@ int main()
     std::cout << "R: Reset grid." << std::endl;
     std::cout << std::endl;
     
-    Engine engine;
+    InteractivePathfindingEngine engine(5, 10);
     while (engine.is_running()) {
         engine.update();
         engine.render();
