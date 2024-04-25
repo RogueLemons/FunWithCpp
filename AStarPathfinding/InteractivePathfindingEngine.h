@@ -47,8 +47,17 @@ private:
 	void reset_grid();
 	StartAndFinish get_start_and_finish();
 
-	// Pathfinding
-	void a_star(const StartAndFinish& path_points);
+	// Friends
+	friend class Pathfinder;
+};
+
+class Pathfinder {
+public:
+	Pathfinder(InteractivePathfindingEngine* engine);
+	InteractivePathfindingEngine* _engine;
+	Pos _start;
+	Pos _finish;
+	void a_star();
 };
 
 

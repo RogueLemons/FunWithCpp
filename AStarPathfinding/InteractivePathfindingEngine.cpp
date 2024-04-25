@@ -84,9 +84,8 @@ void InteractivePathfindingEngine::poll_events()
             case sf::Keyboard::Escape:
                 _window->close();
                 break;
-            case sf::Keyboard::Space:
-                auto path_points = get_start_and_finish();
-                a_star(path_points);
+            case sf::Keyboard::Space: 
+                Pathfinder(this).a_star();
                 break;
             case sf::Keyboard::R:
                 reset_grid();
@@ -155,9 +154,16 @@ StartAndFinish InteractivePathfindingEngine::get_start_and_finish()
     return { start, finish };
 }
 
-void InteractivePathfindingEngine::a_star(const StartAndFinish& path_points)
+Pathfinder::Pathfinder(InteractivePathfindingEngine* engine)
 {
-    square_at(path_points.start.row, path_points.start.column).setFillColor(sf::Color::Red);
-    square_at(path_points.finish.row, path_points.finish.column).setFillColor(sf::Color::Red);
+    _engine = engine;
+    auto path_points = _engine->get_start_and_finish();
+    _start = path_points.start;
+    _finish = path_points.finish;
 }
 
+void Pathfinder::a_star()
+{
+    _engine->square_at(_start.row, _start.column).setFillColor(sf::Color::Red);
+    _engine->square_at(_finish.row, _finish.column).setFillColor(sf::Color::Red);
+}
