@@ -244,10 +244,7 @@ void Pathfinder::a_star()
 
     bool reached_finish = false;
     while (to_search.size() > 0 && !reached_finish) {
-        _source->render();
-        _source->display();
-        while (_source->_clock.getElapsedTime().asSeconds() < 0.2f) { /*Do nothing*/ }
-        _source->_clock.restart();
+        run_special_engine_loop();
 
         Node* current = to_search.front();
         for (auto& node : to_search) {
@@ -297,6 +294,7 @@ void Pathfinder::a_star()
         while (next->Connection != nullptr) {
             next = next->Connection;
             set_color_at(next->pos, PATH);
+            run_special_engine_loop();
         }
     }
 }
@@ -317,6 +315,25 @@ std::vector<Pos> Pathfinder::walkable_neighbors(Pos pos) const
         }
     }
     return walkable_neighbors;
+}
+
+void Pathfinder::run_special_engine_loop(float delay_in_seconds)
+{
+    if (delay_in_seconds <= 0)
+        return;
+    
+    while (_source->_window->pollEvent(_source->_event)) {
+        if (_source->_event.type == sf::Event::Closed) {
+            _source->_window->close();
+        }
+    }
+
+    _source->render();
+    _source->display();
+    while (_source->_clock.getElapsedTime().asSeconds() < delay_in_seconds) { 
+        /*Do nothing*/ 
+    }
+    _source->_clock.restart();
 }
 
 void Pathfinder::set_color_at(Pos& pos, const sf::Color& color, bool mutable_start_finish)

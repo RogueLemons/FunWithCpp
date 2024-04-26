@@ -63,7 +63,7 @@ public:
 	void a_star();
 private:
 	std::vector<Pos> walkable_neighbors(Pos pos) const;
-	void run_engine_loop();
+	void run_special_engine_loop(float delay_in_seconds = 0.2);
 	void set_color_at(Pos& pos, const sf::Color& color, bool mutable_start_finish = false);
 };
 
