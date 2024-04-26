@@ -243,17 +243,16 @@ void Pathfinder::a_star()
     std::vector<Node*> processed;
 
     bool reached_finish = false;
-    while (to_search.size() > 0 || !reached_finish) {
+    while (to_search.size() > 0 && !reached_finish) {
         _source->render();
         _source->display();
-        while (_source->_clock.getElapsedTime().asSeconds() < 0.5f) {
-            // Do nothing
-        }
+        while (_source->_clock.getElapsedTime().asSeconds() < 0.2f) { /*Do nothing*/ }
         _source->_clock.restart();
 
         Node* current = to_search.front();
         for (auto& node : to_search) {
-            if (node->F() < current->F() || (node->F() == current->F() && node->H < current->H)) {
+            bool node_has_lower_cost = node->F() < current->F() || (node->F() == current->F() && node->H < current->H);
+            if (node_has_lower_cost) {
                 current = node;
             }
         }
