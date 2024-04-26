@@ -154,20 +154,28 @@ StartAndFinish InteractivePathfindingEngine::start_and_finish()
     return { start, finish };
 }
 
-Pathfinder::Pathfinder(InteractivePathfindingEngine* engine) : _engine(engine)
+Pathfinder::Pathfinder(InteractivePathfindingEngine* engine) : _source(engine)
 {
-    auto path_points = _engine->start_and_finish();
+    auto path_points = _source->start_and_finish();
     _start = path_points.start;
     _finish = path_points.finish;
 }
 
 namespace {
-    struct Node {
-        Pos Pos = { 0, 0 };
+    class Node {
+    public:
+        Node(Pos pos, int g = 0, int h = 0) : Pos(pos), G(g), H(h) {}
+        const Pos Pos;
         int G = 0; // Goal cost
         int H = 0; // Heuristic cost
         int F() { return G + H; }
         Node* Connection = nullptr;
+        int distance_to(Node node) const {
+            int dr = Pos.row - node.Pos.row;
+            int dc = Pos.col - node.Pos.col;
+            int squared_distance = dr * dr + dc * dc;
+            return squared_distance;
+        }
     };
 }
 
@@ -196,9 +204,9 @@ std::vector<Pos> Pathfinder::walkable_neighbors(Pos pos) const
             if (r == 0 && c == 0)
                 continue;
             Pos neighbor = { pos.row + r, pos.col + c };
-            if (neighbor.row < 0 || neighbor.col < 0 || neighbor.row >= _engine->_grid_rows || neighbor.col >= _engine->_grid_columns)
+            if (neighbor.row < 0 || neighbor.col < 0 || neighbor.row >= _source->_grid_rows || neighbor.col >= _source->_grid_columns)
                 continue;
-            if (_engine->square_at(neighbor.row, neighbor.col).getFillColor() == OBSTACLE)
+            if (_source->square_at(neighbor.row, neighbor.col).getFillColor() == OBSTACLE)
                 continue;
             walkable_neighbors.push_back(neighbor);
         }

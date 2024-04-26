@@ -5,8 +5,8 @@
 #include <memory>
 
 struct Pos {
-	unsigned int row;
-	unsigned int col;
+	int row;
+	int col;
 };
 
 struct StartAndFinish {
@@ -30,8 +30,8 @@ public:
 
 private:
 	// Fields
-	unsigned int _grid_columns;
-	unsigned int _grid_rows;
+	int _grid_columns;
+	int _grid_rows;
 	std::unique_ptr<sf::RenderWindow> _window;
 	sf::VideoMode _video_mode;
 	sf::Event _event;
@@ -54,7 +54,7 @@ private:
 class Pathfinder {
 public:
 	Pathfinder(InteractivePathfindingEngine* engine);
-	InteractivePathfindingEngine* _engine;
+	InteractivePathfindingEngine* _source;
 	Pos _start;
 	Pos _finish;
 	void a_star();
