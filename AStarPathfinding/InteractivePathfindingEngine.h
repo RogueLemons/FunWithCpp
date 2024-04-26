@@ -7,6 +7,8 @@
 struct Pos {
 	int row;
 	int col;
+	bool operator == (const Pos& pos) const { return row == pos.row && col == pos.col; }
+	bool operator != (const Pos& pos) const { return row != pos.row || col != pos.col; }
 };
 
 struct StartAndFinish {
@@ -40,7 +42,8 @@ private:
 	float _dt = 0;
 
 	// Helper methods
-	sf::RectangleShape& square_at(unsigned int row, unsigned int column);
+	sf::RectangleShape& square_at(int row, int column);
+	sf::RectangleShape& square_at(const Pos& p);
 	void poll_events();
 	void create_squares(unsigned int rows, unsigned int columns);
 	sf::RectangleShape& coursor_square();

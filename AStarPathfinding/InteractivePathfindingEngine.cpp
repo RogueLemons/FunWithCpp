@@ -3,6 +3,8 @@
 #define PATH sf::Color::Cyan
 #define BLANK sf::Color::White
 #define OBSTACLE sf::Color::Black
+#define PROCESSED sf::Color::Red
+#define TO_SEARCH sf::Color::Green
 
 namespace {
     void set_obstacle(sf::RectangleShape& square) {
@@ -56,10 +58,15 @@ void InteractivePathfindingEngine::display()
     _window->display();
 }
 
-sf::RectangleShape& InteractivePathfindingEngine::square_at(unsigned int row, unsigned int column)
+sf::RectangleShape& InteractivePathfindingEngine::square_at(int row, int column)
 {
     auto index = _grid_rows * column + row;
     return _squares[index];
+}
+
+sf::RectangleShape& InteractivePathfindingEngine::square_at(const Pos& p)
+{
+    return square_at(p.row, p.col);
 }
 
 void InteractivePathfindingEngine::poll_events()
@@ -147,9 +154,9 @@ StartAndFinish InteractivePathfindingEngine::start_and_finish()
         }
     }
     if (path_points < 2)
-        square_at(finish.row, finish.col).setFillColor(PATH);
+        square_at(finish).setFillColor(PATH);
     if (path_points < 1)
-        square_at(start.row, start.col).setFillColor(PATH);
+        square_at(start).setFillColor(PATH);
 
     return { start, finish };
 }
@@ -162,40 +169,130 @@ Pathfinder::Pathfinder(InteractivePathfindingEngine* engine) : _source(engine)
 }
 
 namespace {
+
     class Node {
     public:
-        Node(Pos pos, int g = 0, int h = 0) : Pos(pos), G(g), H(h) {}
-        const Pos Pos;
+        Node(Pos pos, int g = 0, int h = 0) : pos(pos), G(g), H(h) {}
+        Pos pos;
         int G = 0; // Goal cost
         int H = 0; // Heuristic cost
         Node* Connection = nullptr;
 
-        int F() { return G + H; }
-        int distance_to(Node node) const {
-            int dr = Pos.row - node.Pos.row;
-            int dc = Pos.col - node.Pos.col;
+        int F() { 
+            return G + H; 
+        }
+        int distance_to(Pos p) const {
+            int dr = pos.row - p.row;
+            int dc = pos.col - p.col;
             int squared_distance = dr * dr + dc * dc;
             return squared_distance;
         }
-        bool operator < (Node other) { return F() < other.F(); }
+        int distance_to(Node node) const {
+            return distance_to(node.pos);
+        }
+        bool operator < (Node other) { 
+            return F() < other.F(); 
+        }
+        void remove_from(std::vector<Node*>& nodes) {
+            for (int i = 0; i < nodes.size(); i++) {
+                if (pos == nodes[i]->pos) {
+                    nodes.erase(nodes.begin() + i);
+                    break;
+                }
+            }
+        }
+
     };
+
+    Node* node_at(const Pos& pos, std::vector<Node*>& nodes) {
+        Node* node_at_pos = nullptr;
+        for (auto& node : nodes) {
+            if (pos == node->pos) {
+                node_at_pos = node;
+                break;
+            }
+        }
+        return node_at_pos;
+    }
+    Node* node_at(const Pos& pos, std::vector<Node>& nodes) {
+        Node* node_at_pos = nullptr;
+        for (auto& node : nodes) {
+            if (pos == node.pos) {
+                node_at_pos = &node;
+                break;
+            }
+        }
+        return node_at_pos;
+    }
 }
 
 void Pathfinder::a_star()
 {
-    /*
-    _engine->square_at(_start.row, _start.col).setFillColor(sf::Color::Red);
-    _engine->square_at(_finish.row, _finish.col).setFillColor(sf::Color::Red);
-
-    auto wn1 = WalkableNeighbors({ 0, 0 });
-    auto wn2 = WalkableNeighbors({ 5, 5 });
-    auto wn3 = WalkableNeighbors({ 9, 9 });
-    wn1.insert(std::end(wn1), std::begin(wn2), std::end(wn2));
-    wn1.insert(std::end(wn1), std::begin(wn3), std::end(wn3));
-    for (auto& square : wn1) {
-        _engine->square_at(square.row, square.col).setFillColor(sf::Color::Green);
+    std::vector<Node> nodes;
+    for (int r = 0; r < _source->_grid_rows; r++) {
+        for (int c = 0; c < _source->_grid_rows; c++) {
+            Node n({ r, c });
+            nodes.push_back(n);
+        }
     }
-    */
+
+    Node start(_start);
+    start.H = start.distance_to(_finish);
+    std::vector<Node*> to_search = { &start };
+    std::vector<Node*> processed;
+
+    bool reached_finish = false;
+    while (to_search.size() > 0 || !reached_finish) {
+
+        Node* current = to_search.front();
+        for (auto& node : to_search) {
+            if (node->F() < current->F() || (node->F() == current->F() && node->H < current->H)) {
+                current = node;
+            }
+        }
+
+        if (current->pos != _start && current->pos != _finish)
+            _source->square_at(current->pos).setFillColor(PROCESSED);
+        processed.push_back(current);
+        current->remove_from(to_search);
+
+        for (auto& neighbor_pos : walkable_neighbors(current->pos)) {
+            Node* neighbor = nullptr;
+            neighbor = node_at(neighbor_pos, processed);
+            bool already_processed = neighbor != nullptr;
+            if (already_processed) 
+                continue;
+            neighbor = node_at(neighbor_pos, to_search);
+            bool is_in_search = neighbor != nullptr;
+
+            int cost_to_neighbor = current->G + current->distance_to(neighbor_pos);
+            if (is_in_search && cost_to_neighbor < neighbor->G) {
+                neighbor->G = cost_to_neighbor;
+                neighbor->Connection = current;
+            }
+            if (!is_in_search) {
+                neighbor = node_at(neighbor_pos, nodes);
+                neighbor->G = cost_to_neighbor;
+                neighbor->H = neighbor->distance_to(_finish);
+                to_search.push_back(neighbor);
+
+                if (neighbor->pos == _finish)
+                    reached_finish = true;
+                else if (neighbor->pos != _start)
+                    _source->square_at(neighbor->pos).setFillColor(TO_SEARCH);
+            }
+
+        }
+    }
+
+    if (reached_finish) {
+        Node* next = node_at(_finish, nodes);
+
+        while (next->Connection != nullptr) {
+            next = next->Connection;
+            _source->square_at(next->pos).setFillColor(PATH);
+        }
+    }
 }
 
 std::vector<Pos> Pathfinder::walkable_neighbors(Pos pos) const
