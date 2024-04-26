@@ -235,14 +235,21 @@ void Pathfinder::a_star()
             nodes.push_back(n);
         }
     }
+    nodes.shrink_to_fit();
 
-    Node start(_start);
-    start.H = start.distance_to(_finish);
-    std::vector<Node*> to_search = { &start };
+    Node* start = node_at(_start, nodes);
+    start->H = start->distance_to(_finish);
+    std::vector<Node*> to_search = { start };
     std::vector<Node*> processed;
 
     bool reached_finish = false;
     while (to_search.size() > 0 || !reached_finish) {
+        _source->render();
+        _source->display();
+        while (_source->_clock.getElapsedTime().asSeconds() < 0.5f) {
+            // Do nothing
+        }
+        _source->_clock.restart();
 
         Node* current = to_search.front();
         for (auto& node : to_search) {
@@ -256,7 +263,8 @@ void Pathfinder::a_star()
         processed.push_back(current);
         current->remove_from(to_search);
 
-        for (auto& neighbor_pos : walkable_neighbors(current->pos)) {
+        auto walkable = walkable_neighbors(current->pos);
+        for (auto& neighbor_pos : walkable) {
             Node* neighbor = nullptr;
             neighbor = node_at(neighbor_pos, processed);
             bool already_processed = neighbor != nullptr;
