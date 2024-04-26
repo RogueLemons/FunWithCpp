@@ -177,6 +177,7 @@ namespace {
             int squared_distance = dr * dr + dc * dc;
             return squared_distance;
         }
+        bool operator < (Node other) { return F() < other.F(); }
     };
 }
 
