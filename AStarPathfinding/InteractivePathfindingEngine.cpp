@@ -281,6 +281,7 @@ void Pathfinder::a_star()
                 neighbor = node_at(neighbor_pos, nodes);
                 neighbor->G = cost_to_neighbor;
                 neighbor->H = neighbor->distance_to(_finish);
+                neighbor->Connection = current;
                 to_search.push_back(neighbor);
 
                 if (neighbor->pos == _finish)
