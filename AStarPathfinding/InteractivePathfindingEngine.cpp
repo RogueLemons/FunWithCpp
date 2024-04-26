@@ -257,9 +257,8 @@ void Pathfinder::a_star()
             }
         }
 
-        if (current->pos != _start && current->pos != _finish)
-            _source->square_at(current->pos).setFillColor(PROCESSED);
         processed.push_back(current);
+        set_color_at(current->pos, PROCESSED);
         current->remove_from(to_search);
 
         auto walkable = walkable_neighbors(current->pos);
@@ -283,11 +282,10 @@ void Pathfinder::a_star()
                 neighbor->H = neighbor->distance_to(_finish);
                 neighbor->Connection = current;
                 to_search.push_back(neighbor);
+                set_color_at(neighbor->pos, TO_SEARCH);
 
                 if (neighbor->pos == _finish)
                     reached_finish = true;
-                else if (neighbor->pos != _start)
-                    _source->square_at(neighbor->pos).setFillColor(TO_SEARCH);
             }
 
         }
@@ -298,7 +296,7 @@ void Pathfinder::a_star()
 
         while (next->Connection != nullptr) {
             next = next->Connection;
-            _source->square_at(next->pos).setFillColor(PATH);
+            set_color_at(next->pos, PATH);
         }
     }
 }
@@ -319,4 +317,14 @@ std::vector<Pos> Pathfinder::walkable_neighbors(Pos pos) const
         }
     }
     return walkable_neighbors;
+}
+
+void Pathfinder::set_color_at(Pos& pos, const sf::Color& color, bool mutable_start_finish)
+{
+    if ((pos != _start && pos != _finish)) {
+        _source->square_at(pos).setFillColor(color);
+    }
+    else if (mutable_start_finish) {
+        _source->square_at(pos).setFillColor(color);
+    }
 }
