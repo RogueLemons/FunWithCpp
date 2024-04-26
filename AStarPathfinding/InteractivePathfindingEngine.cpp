@@ -168,8 +168,9 @@ namespace {
         const Pos Pos;
         int G = 0; // Goal cost
         int H = 0; // Heuristic cost
-        int F() { return G + H; }
         Node* Connection = nullptr;
+
+        int F() { return G + H; }
         int distance_to(Node node) const {
             int dr = Pos.row - node.Pos.row;
             int dc = Pos.col - node.Pos.col;
