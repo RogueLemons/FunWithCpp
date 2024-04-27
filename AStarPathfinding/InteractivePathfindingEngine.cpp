@@ -174,8 +174,8 @@ namespace {
     public:
         Node(Pos pos, int g = 0, int h = 0) : pos(pos), G(g), H(h) {}
         Pos pos;
-        int G = 0; // Goal cost
-        int H = 0; // Heuristic cost
+        int G; // Goal cost
+        int H; // Heuristic cost
         Node* Connection = nullptr;
 
         int F() { 
