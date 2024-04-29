@@ -186,7 +186,7 @@ namespace {
             float dr = pos.row - p.row;
             float dc = pos.col - p.col;
             float distance = std::sqrt(dr * dr + dc * dc);
-            return distance;
+            return distance; // Consider using int * 100 as "two-decimal float"
         }
         float distance_to(Node node) const {
             return distance_to(node.pos);
