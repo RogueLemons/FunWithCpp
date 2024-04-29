@@ -173,21 +173,19 @@ namespace {
 
     class Node {
     public:
-        Node(Pos pos, double g = 0, double h = 0) : pos(pos), G(g), H(h) {}
-        double _F;
+        Node(Pos pos, float g = 0, float h = 0) : pos(pos), G(g), H(h) {}
         Pos pos;
-        double G; // Goal cost
-        double H; // Heuristic cost
+        float G; // Goal cost
+        float H; // Heuristic cost
         Node* Connection = nullptr;
 
-        double F() { 
-            _F = G + H;
-            return _F; 
+        float F() { 
+            return G + H;
         }
-        double distance_to(Pos p) const {
-            double dr = pos.row - p.row;
-            double dc = pos.col - p.col;
-            double distance = std::sqrt(dr * dr + dc * dc);
+        float distance_to(Pos p) const {
+            float dr = pos.row - p.row;
+            float dc = pos.col - p.col;
+            float distance = std::sqrt(dr * dr + dc * dc);
             return distance;
         }
         double distance_to(Node node) const {
@@ -275,7 +273,7 @@ void Pathfinder::a_star()
             bool is_in_search = neighbor != nullptr;
             if (!is_in_search)
                 neighbor = node_at(neighbor_pos, nodes);
-            double cost_to_neighbor = current->G + current->distance_to(neighbor->pos);
+            auto cost_to_neighbor = current->G + current->distance_to(neighbor->pos);
 
             if (!is_in_search || cost_to_neighbor < neighbor->G) {
                 neighbor->G = cost_to_neighbor;
