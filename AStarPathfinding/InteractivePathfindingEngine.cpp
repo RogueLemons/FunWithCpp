@@ -261,8 +261,7 @@ void Pathfinder::a_star()
         set_color_at(current->pos, PROCESSED);
         current->remove_from(to_search);
 
-        auto walkable = walkable_neighbors(current->pos);
-        for (auto& neighbor_pos : walkable) {
+        for (auto& neighbor_pos : walkable_neighbors(current->pos)) {
             Node* neighbor = nullptr;
             neighbor = node_at(neighbor_pos, processed);
             bool already_processed = neighbor != nullptr;
