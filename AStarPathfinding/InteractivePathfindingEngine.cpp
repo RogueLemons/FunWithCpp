@@ -271,22 +271,22 @@ void Pathfinder::a_star()
                 continue;
             neighbor = node_at(neighbor_pos, to_search);
             bool is_in_search = neighbor != nullptr;
-            if (!is_in_search)
-                neighbor = node_at(neighbor_pos, nodes);
-            auto cost_to_neighbor = current->G + current->distance_to(neighbor->pos);
+            auto cost_to_neighbor = current->G + current->distance_to(neighbor_pos);
 
-            if (!is_in_search || cost_to_neighbor < neighbor->G) {
+            if (is_in_search && cost_to_neighbor < neighbor->G) {
                 neighbor->G = cost_to_neighbor;
                 neighbor->Connection = current;
+            }
+            else if (!is_in_search) {
+                neighbor = node_at(neighbor_pos, nodes);
+                neighbor->G = cost_to_neighbor;
+                neighbor->H = neighbor->distance_to(_finish);
+                neighbor->Connection = current;
+                to_search.push_back(neighbor);
+                set_color_at(neighbor->pos, TO_SEARCH);
 
-                if (!is_in_search) {
-                    neighbor->H = neighbor->distance_to(_finish);
-                    to_search.push_back(neighbor);
-                    set_color_at(neighbor->pos, TO_SEARCH);
-
-                    if (neighbor->pos == _finish)
-                        reached_finish = true;
-                }
+                if (neighbor->pos == _finish)
+                    reached_finish = true;
             }
         }
     }
