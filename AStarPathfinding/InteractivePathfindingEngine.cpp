@@ -224,6 +224,16 @@ namespace {
         }
         return node_at_pos;
     }
+    Node* lowest_cost_in(const std::vector<Node*>& nodes) {
+        Node* current = nodes.front();
+        for (auto& node : nodes) {
+            bool node_has_lower_cost = node->F() < current->F() || (node->F() == current->F() && node->H < current->H);
+            if (node_has_lower_cost) {
+                current = node;
+            }
+        }
+        return current;
+    }
 }
 
 void Pathfinder::a_star()
@@ -246,14 +256,7 @@ void Pathfinder::a_star()
     while (to_search.size() > 0 && !reached_finish) {
         run_special_engine_loop();
 
-        Node* current = to_search.front();
-        for (auto& node : to_search) {
-            bool node_has_lower_cost = node->F() < current->F() || (node->F() == current->F() && node->H < current->H);
-            if (node_has_lower_cost) {
-                current = node;
-            }
-        }
-
+        Node* current = lowest_cost_in(to_search);
         processed.push_back(current);
         set_color_at(current->pos, PROCESSED);
         current->remove_from(to_search);
