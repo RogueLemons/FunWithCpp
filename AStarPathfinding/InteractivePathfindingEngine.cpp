@@ -1,4 +1,5 @@
 #include "InteractivePathfindingEngine.h"
+#include <cmath>
 
 #define PATH sf::Color::Cyan
 #define BLANK sf::Color::White
@@ -172,28 +173,28 @@ namespace {
 
     class Node {
     public:
-        Node(Pos pos, int g = 0, int h = 0) : pos(pos), G(g), H(h) {}
+        Node(Pos pos, float g = 0, float h = 0) : pos(pos), G(g), H(h) {}
         Pos pos;
-        int G = 0; // Goal cost
-        int H = 0; // Heuristic cost
+        float G; // Goal cost
+        float H; // Heuristic cost
         Node* Connection = nullptr;
 
-        int F() { 
-            return G + H; 
+        float F() const { 
+            return G + H;
         }
-        int distance_to(Pos p) const {
-            int dr = pos.row - p.row;
-            int dc = pos.col - p.col;
-            int squared_distance = dr * dr + dc * dc;
-            return squared_distance;
+        float distance_to(Pos p) const {
+            float dr = pos.row - p.row;
+            float dc = pos.col - p.col;
+            float distance = std::sqrt(dr * dr + dc * dc);
+            return distance; // Consider using int * 100 as "two-decimal float"
         }
-        int distance_to(Node node) const {
+        float distance_to(Node node) const {
             return distance_to(node.pos);
         }
-        bool operator < (Node other) { 
+        bool operator < (Node other) const { 
             return F() < other.F(); 
         }
-        void remove_from(std::vector<Node*>& nodes) {
+        void remove_from(std::vector<Node*>& nodes) const {
             for (int i = 0; i < nodes.size(); i++) {
                 if (pos == nodes[i]->pos) {
                     nodes.erase(nodes.begin() + i);
@@ -224,6 +225,16 @@ namespace {
         }
         return node_at_pos;
     }
+    Node* lowest_cost_in(const std::vector<Node*>& nodes) {
+        Node* current = nodes.front();
+        for (auto& node : nodes) {
+            bool node_has_lower_cost = node->F() < current->F() || (node->F() == current->F() && node->H < current->H);
+            if (node_has_lower_cost) {
+                current = node;
+            }
+        }
+        return current;
+    }
 }
 
 void Pathfinder::a_star()
@@ -246,20 +257,13 @@ void Pathfinder::a_star()
     while (to_search.size() > 0 && !reached_finish) {
         run_special_engine_loop();
 
-        Node* current = to_search.front();
-        for (auto& node : to_search) {
-            bool node_has_lower_cost = node->F() < current->F() || (node->F() == current->F() && node->H < current->H);
-            if (node_has_lower_cost) {
-                current = node;
-            }
-        }
-
+        Node* current = lowest_cost_in(to_search);
+        auto F = current->F();
         processed.push_back(current);
         set_color_at(current->pos, PROCESSED);
         current->remove_from(to_search);
 
-        auto walkable = walkable_neighbors(current->pos);
-        for (auto& neighbor_pos : walkable) {
+        for (auto& neighbor_pos : walkable_neighbors(current->pos)) {
             Node* neighbor = nullptr;
             neighbor = node_at(neighbor_pos, processed);
             bool already_processed = neighbor != nullptr;
@@ -267,13 +271,13 @@ void Pathfinder::a_star()
                 continue;
             neighbor = node_at(neighbor_pos, to_search);
             bool is_in_search = neighbor != nullptr;
+            auto cost_to_neighbor = current->G + current->distance_to(neighbor_pos);
 
-            int cost_to_neighbor = current->G + current->distance_to(neighbor_pos);
             if (is_in_search && cost_to_neighbor < neighbor->G) {
                 neighbor->G = cost_to_neighbor;
                 neighbor->Connection = current;
             }
-            if (!is_in_search) {
+            else if (!is_in_search) {
                 neighbor = node_at(neighbor_pos, nodes);
                 neighbor->G = cost_to_neighbor;
                 neighbor->H = neighbor->distance_to(_finish);
@@ -284,7 +288,6 @@ void Pathfinder::a_star()
                 if (neighbor->pos == _finish)
                     reached_finish = true;
             }
-
         }
     }
 
