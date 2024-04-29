@@ -179,7 +179,7 @@ namespace {
         float H; // Heuristic cost
         Node* Connection = nullptr;
 
-        float F() { 
+        float F() const { 
             return G + H;
         }
         float distance_to(Pos p) const {
@@ -188,10 +188,10 @@ namespace {
             float distance = std::sqrt(dr * dr + dc * dc);
             return distance;
         }
-        double distance_to(Node node) const {
+        float distance_to(Node node) const {
             return distance_to(node.pos);
         }
-        bool operator < (Node other) { 
+        bool operator < (Node other) const { 
             return F() < other.F(); 
         }
         void remove_from(std::vector<Node*>& nodes) const {
