@@ -1,4 +1,5 @@
 #include "InteractivePathfindingEngine.h"
+#include <cmath>
 
 #define PATH sf::Color::Cyan
 #define BLANK sf::Color::White
@@ -172,25 +173,27 @@ namespace {
 
     class Node {
     public:
-        Node(Pos pos, int g = 0, int h = 0) : pos(pos), G(g), H(h) {}
+        Node(Pos pos, double g = 0, double h = 0) : pos(pos), G(g), H(h) {}
+        double _F;
         Pos pos;
-        int G; // Goal cost
-        int H; // Heuristic cost
+        double G; // Goal cost
+        double H; // Heuristic cost
         Node* Connection = nullptr;
 
-        int F() const { 
-            return G + H; 
+        double F() { 
+            _F = G + H;
+            return _F; 
         }
-        int distance_to(Pos p) const {
-            int dr = pos.row - p.row;
-            int dc = pos.col - p.col;
-            int squared_distance = dr * dr + dc * dc;
-            return squared_distance;
+        double distance_to(Pos p) const {
+            double dr = pos.row - p.row;
+            double dc = pos.col - p.col;
+            double distance = std::sqrt(dr * dr + dc * dc);
+            return distance;
         }
-        int distance_to(Node node) const {
+        double distance_to(Node node) const {
             return distance_to(node.pos);
         }
-        bool operator < (Node other) const { 
+        bool operator < (Node other) { 
             return F() < other.F(); 
         }
         void remove_from(std::vector<Node*>& nodes) const {
@@ -257,6 +260,7 @@ void Pathfinder::a_star()
         run_special_engine_loop();
 
         Node* current = lowest_cost_in(to_search);
+        auto F = current->F();
         processed.push_back(current);
         set_color_at(current->pos, PROCESSED);
         current->remove_from(to_search);
@@ -269,24 +273,23 @@ void Pathfinder::a_star()
                 continue;
             neighbor = node_at(neighbor_pos, to_search);
             bool is_in_search = neighbor != nullptr;
-
-            int cost_to_neighbor = current->G + current->distance_to(neighbor_pos);
-            if (is_in_search && cost_to_neighbor < neighbor->G) {
-                neighbor->G = cost_to_neighbor;
-                neighbor->Connection = current;
-            }
-            if (!is_in_search) {
+            if (!is_in_search)
                 neighbor = node_at(neighbor_pos, nodes);
+            double cost_to_neighbor = current->G + current->distance_to(neighbor->pos);
+
+            if (!is_in_search || cost_to_neighbor < neighbor->G) {
                 neighbor->G = cost_to_neighbor;
-                neighbor->H = neighbor->distance_to(_finish);
                 neighbor->Connection = current;
-                to_search.push_back(neighbor);
-                set_color_at(neighbor->pos, TO_SEARCH);
 
-                if (neighbor->pos == _finish)
-                    reached_finish = true;
+                if (!is_in_search) {
+                    neighbor->H = neighbor->distance_to(_finish);
+                    to_search.push_back(neighbor);
+                    set_color_at(neighbor->pos, TO_SEARCH);
+
+                    if (neighbor->pos == _finish)
+                        reached_finish = true;
+                }
             }
-
         }
     }
 
