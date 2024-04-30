@@ -283,10 +283,8 @@ void Pathfinder::a_star()
         current->remove_from(to_search);
 
         for (auto& neighbor_pos : walkable_neighbors(current->pos)) {
-            Node* neighbor = nullptr;
-            neighbor = node_at(neighbor_pos, processed);
-            bool already_processed = neighbor != nullptr;
-            if (already_processed) 
+            auto neighbor = node_at(neighbor_pos, processed);
+            if (neighbor != nullptr)
                 continue;
             neighbor = node_at(neighbor_pos, to_search);
             bool is_in_search = neighbor != nullptr;
