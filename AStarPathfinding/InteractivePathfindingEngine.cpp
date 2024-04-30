@@ -240,13 +240,13 @@ namespace {
         NodeGrid(int rows, int columns) 
             : Columns(columns)
             , Rows(rows) {
+            Nodes.reserve(rows * columns);
             for (int c = 0; c < columns; c++) {
                 for (int r = 0; r < rows; r++) {
                     Node n({ r, c });
                     Nodes.push_back(n);
                 }
             }
-            Nodes.shrink_to_fit();
         }
         std::vector<Node> Nodes;
         const int Columns;
