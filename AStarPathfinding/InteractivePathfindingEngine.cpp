@@ -206,12 +206,12 @@ namespace {
             return F() < other->F() || (F() == other->F() && H < other->H);
         }
         void remove_from(std::vector<Node*>& nodes) const {
-            for (int i = 0; i < nodes.size(); i++) {
-                if (pos == nodes[i]->pos) {
-                    nodes.erase(nodes.begin() + i);
-                    break;
-                }
+            int i;
+            for (i = 0; i < nodes.size(); i++) {
+                if (pos == nodes[i]->pos) break;
             }
+            std::swap(nodes[i], nodes.back());
+            nodes.pop_back();
         }
 
     };
