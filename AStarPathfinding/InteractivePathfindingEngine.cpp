@@ -227,9 +227,11 @@ namespace {
 
     class NodeGrid {
     public:
-        NodeGrid(int rows, int columns) {
-            for (int r = 0; r < rows; r++) {
-                for (int c = 0; c < columns; c++) {
+        NodeGrid(int rows, int columns) 
+            : Columns(columns)
+            , Rows(rows) {
+            for (int c = 0; c < columns; c++) {
+                for (int r = 0; r < rows; r++) {
                     Node n({ r, c });
                     Nodes.push_back(n);
                 }
@@ -237,15 +239,14 @@ namespace {
             Nodes.shrink_to_fit();
         }
         std::vector<Node> Nodes;
+        const int Columns;
+        const int Rows;
         Node* node_at(const Pos& pos) {
-            Node* node_at_pos = nullptr;
-            for (auto& node : Nodes) {
-                if (pos == node.pos) {
-                    node_at_pos = &node;
-                    break;
-                }
-            }
-            return node_at_pos;
+            int index = Rows * pos.col + pos.row;
+            if (index >= Nodes.size())
+                return nullptr;
+            else
+                return &Nodes[index];
         }
     };
 }
