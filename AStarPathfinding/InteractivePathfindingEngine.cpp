@@ -98,6 +98,9 @@ void InteractivePathfindingEngine::poll_events()
             case sf::Keyboard::R:
                 reset_grid();
                 break;
+            case sf::Keyboard::C:
+                clear_path_and_results();
+                break;
             }
         }
     }
@@ -134,6 +137,14 @@ sf::RectangleShape& InteractivePathfindingEngine::coursor_square() {
 void InteractivePathfindingEngine::reset_grid()
 {
     for (auto& square : _squares) {
+        square.setFillColor(BLANK);
+    }
+}
+
+void InteractivePathfindingEngine::clear_path_and_results() {
+    for (auto& square : _squares) {
+        if (square.getFillColor() == OBSTACLE)
+            continue;
         square.setFillColor(BLANK);
     }
 }

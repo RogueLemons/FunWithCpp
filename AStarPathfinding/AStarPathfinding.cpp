@@ -10,6 +10,7 @@ int main()
     std::cout << "Spacebar: Find shortest path." << std::endl;
     std::cout << "Escape: Exit application." << std::endl;
     std::cout << "R: Reset grid." << std::endl;
+    std::cout << "C: Clear path and results." << std::endl;
     std::cout << std::endl;
     
     InteractivePathfindingEngine engine;

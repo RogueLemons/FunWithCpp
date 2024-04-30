@@ -48,6 +48,7 @@ private:
 	void create_squares(unsigned int rows, unsigned int columns);
 	sf::RectangleShape& coursor_square();
 	void reset_grid();
+	void clear_path_and_results();
 	StartAndFinish start_and_finish();
 
 	// Friends
