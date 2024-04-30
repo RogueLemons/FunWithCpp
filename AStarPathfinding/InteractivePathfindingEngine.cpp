@@ -319,7 +319,7 @@ void Pathfinder::a_star()
     }
 }
 
-std::vector<Pos> Pathfinder::walkable_neighbors(Pos pos) const
+std::vector<Pos> Pathfinder::walkable_neighbors(Pos pos, bool cutting_corners) const
 {
     std::vector<Pos> walkable_neighbors;
     for (int r = -1; r <= 1; r++) {
@@ -327,9 +327,13 @@ std::vector<Pos> Pathfinder::walkable_neighbors(Pos pos) const
             if (r == 0 && c == 0)
                 continue;
             Pos neighbor = { pos.row + r, pos.col + c };
-            if (neighbor.row < 0 || neighbor.col < 0 || neighbor.row >= _source->_grid_rows || neighbor.col >= _source->_grid_columns)
+            bool out_of_bounds = neighbor.row < 0 || neighbor.col < 0 || neighbor.row >= _source->_grid_rows || neighbor.col >= _source->_grid_columns;
+            if (out_of_bounds)
                 continue;
-            if (_source->square_at(neighbor.row, neighbor.col).getFillColor() == OBSTACLE)
+            if (_source->square_at(neighbor).getFillColor() == OBSTACLE)
+                continue;
+            Pos corner_a = { pos.row, pos.col + c }, corner_b = { pos.row + r, pos.col };
+            if (!cutting_corners && abs(r) == abs(c) && (_source->square_at(corner_a).getFillColor() == OBSTACLE || _source->square_at(corner_b).getFillColor() == OBSTACLE))
                 continue;
             walkable_neighbors.push_back(neighbor);
         }
