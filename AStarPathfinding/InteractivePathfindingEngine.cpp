@@ -204,22 +204,11 @@ namespace {
         }
 
     };
-
     Node* node_at(const Pos& pos, std::vector<Node*>& nodes) {
         Node* node_at_pos = nullptr;
         for (auto& node : nodes) {
             if (pos == node->pos) {
                 node_at_pos = node;
-                break;
-            }
-        }
-        return node_at_pos;
-    }
-    Node* node_at(const Pos& pos, std::vector<Node>& nodes) {
-        Node* node_at_pos = nullptr;
-        for (auto& node : nodes) {
-            if (pos == node.pos) {
-                node_at_pos = &node;
                 break;
             }
         }
@@ -235,20 +224,36 @@ namespace {
         }
         return current;
     }
+
+    class NodeGrid {
+    public:
+        NodeGrid(int rows, int columns) {
+            for (int r = 0; r < rows; r++) {
+                for (int c = 0; c < columns; c++) {
+                    Node n({ r, c });
+                    Nodes.push_back(n);
+                }
+            }
+            Nodes.shrink_to_fit();
+        }
+        std::vector<Node> Nodes;
+        Node* node_at(const Pos& pos) {
+            Node* node_at_pos = nullptr;
+            for (auto& node : Nodes) {
+                if (pos == node.pos) {
+                    node_at_pos = &node;
+                    break;
+                }
+            }
+            return node_at_pos;
+        }
+    };
 }
 
 void Pathfinder::a_star()
 {
-    std::vector<Node> nodes;
-    for (int r = 0; r < _source->_grid_rows; r++) {
-        for (int c = 0; c < _source->_grid_rows; c++) {
-            Node n({ r, c });
-            nodes.push_back(n);
-        }
-    }
-    nodes.shrink_to_fit();
-
-    Node* start = node_at(_start, nodes);
+    NodeGrid grid(_source->_grid_rows, _source->_grid_columns);
+    auto start = grid.node_at(_start);
     start->H = start->distance_to(_finish);
     std::vector<Node*> to_search = { start };
     std::vector<Node*> processed;
@@ -278,7 +283,7 @@ void Pathfinder::a_star()
                 neighbor->Connection = current;
             }
             else if (!is_in_search) {
-                neighbor = node_at(neighbor_pos, nodes);
+                neighbor = grid.node_at(neighbor_pos);
                 neighbor->G = cost_to_neighbor;
                 neighbor->H = neighbor->distance_to(_finish);
                 neighbor->Connection = current;
@@ -292,7 +297,7 @@ void Pathfinder::a_star()
     }
 
     if (reached_finish) {
-        Node* next = node_at(_finish, nodes);
+        auto next = grid.node_at(_finish);
 
         while (next->Connection != nullptr) {
             next = next->Connection;
