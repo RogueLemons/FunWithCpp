@@ -266,8 +266,11 @@ void Pathfinder::a_star()
     NodeGrid grid(_source->_grid_rows, _source->_grid_columns);
     auto start = grid.node_at(_start);
     start->H = start->distance_to(_finish);
-    std::vector<Node*> to_search = { start };
+    std::vector<Node*> to_search;
+    to_search.reserve(0.5f * grid.Nodes.size());
+    to_search.push_back(start);
     std::vector<Node*> processed;
+    processed.reserve(0.5f * grid.Nodes.size());
 
     bool reached_finish = false;
     while (to_search.size() > 0 && !reached_finish) {
