@@ -202,8 +202,8 @@ namespace {
         float distance_to(Node node) const {
             return distance_to(node.pos);
         }
-        bool operator < (Node other) const { 
-            return F() < other.F(); 
+        bool has_lower_cost_than(Node* other) const { 
+            return F() < other->F() || (F() == other->F() && H < other->H);
         }
         void remove_from(std::vector<Node*>& nodes) const {
             for (int i = 0; i < nodes.size(); i++) {
@@ -228,8 +228,7 @@ namespace {
     Node* lowest_cost_in(const std::vector<Node*>& nodes) {
         Node* current = nodes.front();
         for (auto& node : nodes) {
-            bool node_has_lower_cost = node->F() < current->F() || (node->F() == current->F() && node->H < current->H);
-            if (node_has_lower_cost) {
+            if (node->has_lower_cost_than(current)) {
                 current = node;
             }
         }
