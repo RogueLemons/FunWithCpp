@@ -98,6 +98,9 @@ void InteractivePathfindingEngine::poll_events()
             case sf::Keyboard::R:
                 reset_grid();
                 break;
+            case sf::Keyboard::C:
+                clear_path_and_results();
+                break;
             }
         }
     }
@@ -134,6 +137,14 @@ sf::RectangleShape& InteractivePathfindingEngine::coursor_square() {
 void InteractivePathfindingEngine::reset_grid()
 {
     for (auto& square : _squares) {
+        square.setFillColor(BLANK);
+    }
+}
+
+void InteractivePathfindingEngine::clear_path_and_results() {
+    for (auto& square : _squares) {
+        if (square.getFillColor() == OBSTACLE)
+            continue;
         square.setFillColor(BLANK);
     }
 }
@@ -191,20 +202,19 @@ namespace {
         float distance_to(Node node) const {
             return distance_to(node.pos);
         }
-        bool operator < (Node other) const { 
-            return F() < other.F(); 
+        bool has_lower_cost_than(Node* other) const { 
+            return F() < other->F() || (F() == other->F() && H < other->H);
         }
         void remove_from(std::vector<Node*>& nodes) const {
-            for (int i = 0; i < nodes.size(); i++) {
-                if (pos == nodes[i]->pos) {
-                    nodes.erase(nodes.begin() + i);
-                    break;
-                }
+            int i;
+            for (i = 0; i < nodes.size(); i++) {
+                if (pos == nodes[i]->pos) break;
             }
+            std::swap(nodes[i], nodes.back());
+            nodes.pop_back();
         }
 
     };
-
     Node* node_at(const Pos& pos, std::vector<Node*>& nodes) {
         Node* node_at_pos = nullptr;
         for (auto& node : nodes) {
@@ -215,43 +225,52 @@ namespace {
         }
         return node_at_pos;
     }
-    Node* node_at(const Pos& pos, std::vector<Node>& nodes) {
-        Node* node_at_pos = nullptr;
-        for (auto& node : nodes) {
-            if (pos == node.pos) {
-                node_at_pos = &node;
-                break;
-            }
-        }
-        return node_at_pos;
-    }
     Node* lowest_cost_in(const std::vector<Node*>& nodes) {
         Node* current = nodes.front();
         for (auto& node : nodes) {
-            bool node_has_lower_cost = node->F() < current->F() || (node->F() == current->F() && node->H < current->H);
-            if (node_has_lower_cost) {
+            if (node->has_lower_cost_than(current)) {
                 current = node;
             }
         }
         return current;
     }
+
+    class NodeGrid {
+    public:
+        NodeGrid(int rows, int columns) 
+            : Columns(columns)
+            , Rows(rows) {
+            Nodes.reserve(rows * columns);
+            for (int c = 0; c < columns; c++) {
+                for (int r = 0; r < rows; r++) {
+                    Node n({ r, c });
+                    Nodes.push_back(n);
+                }
+            }
+        }
+        std::vector<Node> Nodes;
+        const int Columns;
+        const int Rows;
+        Node* node_at(const Pos& pos) {
+            int index = Rows * pos.col + pos.row;
+            if (index >= Nodes.size())
+                return nullptr;
+            else
+                return &Nodes[index];
+        }
+    };
 }
 
 void Pathfinder::a_star()
 {
-    std::vector<Node> nodes;
-    for (int r = 0; r < _source->_grid_rows; r++) {
-        for (int c = 0; c < _source->_grid_rows; c++) {
-            Node n({ r, c });
-            nodes.push_back(n);
-        }
-    }
-    nodes.shrink_to_fit();
-
-    Node* start = node_at(_start, nodes);
+    NodeGrid grid(_source->_grid_rows, _source->_grid_columns);
+    auto start = grid.node_at(_start);
     start->H = start->distance_to(_finish);
-    std::vector<Node*> to_search = { start };
+    std::vector<Node*> to_search;
+    to_search.reserve(0.5f * grid.Nodes.size());
+    to_search.push_back(start);
     std::vector<Node*> processed;
+    processed.reserve(0.5f * grid.Nodes.size());
 
     bool reached_finish = false;
     while (to_search.size() > 0 && !reached_finish) {
@@ -264,10 +283,8 @@ void Pathfinder::a_star()
         current->remove_from(to_search);
 
         for (auto& neighbor_pos : walkable_neighbors(current->pos)) {
-            Node* neighbor = nullptr;
-            neighbor = node_at(neighbor_pos, processed);
-            bool already_processed = neighbor != nullptr;
-            if (already_processed) 
+            auto neighbor = node_at(neighbor_pos, processed);
+            if (neighbor != nullptr)
                 continue;
             neighbor = node_at(neighbor_pos, to_search);
             bool is_in_search = neighbor != nullptr;
@@ -278,7 +295,7 @@ void Pathfinder::a_star()
                 neighbor->Connection = current;
             }
             else if (!is_in_search) {
-                neighbor = node_at(neighbor_pos, nodes);
+                neighbor = grid.node_at(neighbor_pos);
                 neighbor->G = cost_to_neighbor;
                 neighbor->H = neighbor->distance_to(_finish);
                 neighbor->Connection = current;
@@ -292,7 +309,7 @@ void Pathfinder::a_star()
     }
 
     if (reached_finish) {
-        Node* next = node_at(_finish, nodes);
+        auto next = grid.node_at(_finish);
 
         while (next->Connection != nullptr) {
             next = next->Connection;
@@ -302,7 +319,7 @@ void Pathfinder::a_star()
     }
 }
 
-std::vector<Pos> Pathfinder::walkable_neighbors(Pos pos) const
+std::vector<Pos> Pathfinder::walkable_neighbors(Pos pos, bool cutting_corners) const
 {
     std::vector<Pos> walkable_neighbors;
     for (int r = -1; r <= 1; r++) {
@@ -310,9 +327,13 @@ std::vector<Pos> Pathfinder::walkable_neighbors(Pos pos) const
             if (r == 0 && c == 0)
                 continue;
             Pos neighbor = { pos.row + r, pos.col + c };
-            if (neighbor.row < 0 || neighbor.col < 0 || neighbor.row >= _source->_grid_rows || neighbor.col >= _source->_grid_columns)
+            bool out_of_bounds = neighbor.row < 0 || neighbor.col < 0 || neighbor.row >= _source->_grid_rows || neighbor.col >= _source->_grid_columns;
+            if (out_of_bounds)
                 continue;
-            if (_source->square_at(neighbor.row, neighbor.col).getFillColor() == OBSTACLE)
+            if (_source->square_at(neighbor).getFillColor() == OBSTACLE)
+                continue;
+            Pos corner_a = { pos.row, pos.col + c }, corner_b = { pos.row + r, pos.col };
+            if (!cutting_corners && abs(r) == abs(c) && (_source->square_at(corner_a).getFillColor() == OBSTACLE || _source->square_at(corner_b).getFillColor() == OBSTACLE))
                 continue;
             walkable_neighbors.push_back(neighbor);
         }
