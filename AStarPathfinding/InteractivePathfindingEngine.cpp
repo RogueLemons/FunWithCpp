@@ -214,7 +214,7 @@ namespace {
         NodeGridSearcher(int rows, int columns, Pos start) 
             : Columns(columns)
             , Rows(rows) {
-            Nodes.reserve(rows * columns);
+            Nodes.reserve(1.0 * rows * columns);
             for (int c = 0; c < columns; c++) {
                 for (int r = 0; r < rows; r++) {
                     Node n({ r, c });
@@ -288,19 +288,18 @@ void Pathfinder::a_star()
                 continue;
             auto cost_to_neighbor = current->G + current->distance_to(neighbor_pos);
 
-            if (neighbor->ToSearch && cost_to_neighbor < neighbor->G) {
+            if (!neighbor->ToSearch || cost_to_neighbor < neighbor->G) {
                 neighbor->G = cost_to_neighbor;
                 neighbor->Connection = current;
-            }
-            else if (!neighbor->ToSearch) {
-                neighbor->G = cost_to_neighbor;
-                neighbor->H = neighbor->distance_to(_finish);
-                neighbor->Connection = current;
-                grid.add_to_search(neighbor);
-                set_color_at(neighbor->pos, TO_SEARCH);
+                
+                if (!neighbor->ToSearch) {
+                    neighbor->H = neighbor->distance_to(_finish);
+                    grid.add_to_search(neighbor);
+                    set_color_at(neighbor->pos, TO_SEARCH);
 
-                if (neighbor->pos == _finish)
-                    reached_finish = true;
+                    if (neighbor->pos == _finish)
+                        reached_finish = true;
+                }
             }
         }
     }
