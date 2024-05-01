@@ -358,10 +358,7 @@ void Pathfinder::run_special_engine_loop(float delay_in_seconds)
 
 void Pathfinder::set_color_at(Pos& pos, const sf::Color& color, bool mutable_start_finish)
 {
-    if ((pos != _start && pos != _finish)) {
-        _source->square_at(pos).setFillColor(color);
-    }
-    else if (mutable_start_finish) {
+    if ((pos != _start && pos != _finish) || mutable_start_finish) {
         _source->square_at(pos).setFillColor(color);
     }
 }
