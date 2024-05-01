@@ -286,8 +286,8 @@ void Pathfinder::a_star()
             auto neighbor = grid.node_at(neighbor_pos);
             if (neighbor->Processed)
                 continue;
-            auto cost_to_neighbor = current->G + current->distance_to(neighbor_pos);
 
+            auto cost_to_neighbor = current->G + current->distance_to(neighbor_pos);
             if (!neighbor->ToSearch || cost_to_neighbor < neighbor->G) {
                 neighbor->G = cost_to_neighbor;
                 neighbor->Connection = current;
