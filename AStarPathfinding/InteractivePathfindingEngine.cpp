@@ -182,13 +182,14 @@ Pathfinder::Pathfinder(InteractivePathfindingEngine* engine) : _source(engine)
 
 namespace {
 
-    class Node {
-    public:
+    struct Node {
         Node(Pos pos, float g = 0, float h = 0) : pos(pos), G(g), H(h) {}
         Pos pos;
         float G; // Goal cost
         float H; // Heuristic cost
         Node* Connection = nullptr;
+        bool Processed = false;
+        bool ToSearch = false;
 
         float F() const { 
             return G + H;
@@ -205,50 +206,28 @@ namespace {
         bool has_lower_cost_than(Node* other) const { 
             return F() < other->F() || (F() == other->F() && H < other->H);
         }
-        void remove_from(std::vector<Node*>& nodes) const {
-            int i;
-            for (i = 0; i < nodes.size(); i++) {
-                if (pos == nodes[i]->pos) break;
-            }
-            std::swap(nodes[i], nodes.back());
-            nodes.pop_back();
-        }
 
     };
-    Node* node_at(const Pos& pos, std::vector<Node*>& nodes) {
-        Node* node_at_pos = nullptr;
-        for (auto& node : nodes) {
-            if (pos == node->pos) {
-                node_at_pos = node;
-                break;
-            }
-        }
-        return node_at_pos;
-    }
-    Node* lowest_cost_in(const std::vector<Node*>& nodes) {
-        Node* current = nodes.front();
-        for (auto& node : nodes) {
-            if (node->has_lower_cost_than(current)) {
-                current = node;
-            }
-        }
-        return current;
-    }
 
-    class NodeGrid {
+    class NodeGridSearcher {
     public:
-        NodeGrid(int rows, int columns) 
+        NodeGridSearcher(int rows, int columns, Pos start) 
             : Columns(columns)
             , Rows(rows) {
-            Nodes.reserve(rows * columns);
+            Nodes.reserve(1.0 * rows * columns);
             for (int c = 0; c < columns; c++) {
                 for (int r = 0; r < rows; r++) {
                     Node n({ r, c });
                     Nodes.push_back(n);
                 }
             }
+            ToSearch.reserve(0.5 * Nodes.size());
+            auto start_ = node_at(start);
+            start_->ToSearch = true;
+            ToSearch.push_back(start_);
         }
         std::vector<Node> Nodes;
+        std::vector<Node*> ToSearch;
         const int Columns;
         const int Rows;
         Node* node_at(const Pos& pos) {
@@ -258,52 +237,69 @@ namespace {
             else
                 return &Nodes[index];
         }
+        Node* lowest_cost_to_search() {
+            Node* current = ToSearch.front();
+            for (auto& node : ToSearch) {
+                if (node->has_lower_cost_than(current)) {
+                    current = node;
+                }
+            }
+            return current;
+        }
+        void add_to_search(Node* node) {
+            node->ToSearch = true;
+            ToSearch.push_back(node);
+        }
+    private: 
+        void remove_from_search(Node* node) {
+            int i;
+            for (i = 0; i < ToSearch.size(); i++) {
+                if (node->pos == ToSearch[i]->pos) break;
+            }
+            std::swap(ToSearch[i], ToSearch.back());
+            ToSearch.pop_back();
+        }
+    public:
+        void set_as_processed(Node* node) {
+            node->Processed = true;
+            node->ToSearch = false;
+            remove_from_search(node);
+        }
     };
 }
 
 void Pathfinder::a_star()
 {
-    NodeGrid grid(_source->_grid_rows, _source->_grid_columns);
+    NodeGridSearcher grid(_source->_grid_rows, _source->_grid_columns, _start);
     auto start = grid.node_at(_start);
     start->H = start->distance_to(_finish);
-    std::vector<Node*> to_search;
-    to_search.reserve(0.5f * grid.Nodes.size());
-    to_search.push_back(start);
-    std::vector<Node*> processed;
-    processed.reserve(0.5f * grid.Nodes.size());
 
     bool reached_finish = false;
-    while (to_search.size() > 0 && !reached_finish) {
+    while (grid.ToSearch.size() > 0 && !reached_finish) {
         run_special_engine_loop();
 
-        Node* current = lowest_cost_in(to_search);
-        auto F = current->F();
-        processed.push_back(current);
+        auto current = grid.lowest_cost_to_search();
+        grid.set_as_processed(current);
         set_color_at(current->pos, PROCESSED);
-        current->remove_from(to_search);
 
         for (auto& neighbor_pos : walkable_neighbors(current->pos)) {
-            auto neighbor = node_at(neighbor_pos, processed);
-            if (neighbor != nullptr)
+            auto neighbor = grid.node_at(neighbor_pos);
+            if (neighbor->Processed)
                 continue;
-            neighbor = node_at(neighbor_pos, to_search);
-            bool is_in_search = neighbor != nullptr;
+
             auto cost_to_neighbor = current->G + current->distance_to(neighbor_pos);
-
-            if (is_in_search && cost_to_neighbor < neighbor->G) {
+            if (!neighbor->ToSearch || cost_to_neighbor < neighbor->G) {
                 neighbor->G = cost_to_neighbor;
                 neighbor->Connection = current;
-            }
-            else if (!is_in_search) {
-                neighbor = grid.node_at(neighbor_pos);
-                neighbor->G = cost_to_neighbor;
-                neighbor->H = neighbor->distance_to(_finish);
-                neighbor->Connection = current;
-                to_search.push_back(neighbor);
-                set_color_at(neighbor->pos, TO_SEARCH);
+                
+                if (!neighbor->ToSearch) {
+                    neighbor->H = neighbor->distance_to(_finish);
+                    grid.add_to_search(neighbor);
+                    set_color_at(neighbor->pos, TO_SEARCH);
 
-                if (neighbor->pos == _finish)
-                    reached_finish = true;
+                    if (neighbor->pos == _finish)
+                        reached_finish = true;
+                }
             }
         }
     }
@@ -362,10 +358,7 @@ void Pathfinder::run_special_engine_loop(float delay_in_seconds)
 
 void Pathfinder::set_color_at(Pos& pos, const sf::Color& color, bool mutable_start_finish)
 {
-    if ((pos != _start && pos != _finish)) {
-        _source->square_at(pos).setFillColor(color);
-    }
-    else if (mutable_start_finish) {
+    if ((pos != _start && pos != _finish) || mutable_start_finish) {
         _source->square_at(pos).setFillColor(color);
     }
 }
