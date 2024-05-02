@@ -210,36 +210,45 @@ namespace {
     };
 
     class NodeGridSearcher {
+    private:
+        std::vector<Node> _nodes;
+        std::vector<Node*> _to_search;
+        const int _columns;
+        const int _rows;
+        void remove_from_search(Node* node) {
+            int i;
+            for (i = 0; i < _to_search.size(); i++) {
+                if (node->pos == _to_search[i]->pos) break;
+            }
+            std::swap(_to_search[i], _to_search.back());
+            _to_search.pop_back();
+        }
     public:
         NodeGridSearcher(int rows, int columns, Pos start) 
-            : Columns(columns)
-            , Rows(rows) {
-            Nodes.reserve(1.0 * rows * columns);
+            : _columns(columns)
+            , _rows(rows) {
+            _nodes.reserve(1.0 * rows * columns);
             for (int c = 0; c < columns; c++) {
                 for (int r = 0; r < rows; r++) {
                     Node n({ r, c });
-                    Nodes.push_back(n);
+                    _nodes.push_back(n);
                 }
             }
-            ToSearch.reserve(0.5 * Nodes.size());
+            _to_search.reserve(0.5 * _nodes.size());
             auto start_ = node_at(start);
             start_->ToSearch = true;
-            ToSearch.push_back(start_);
+            _to_search.push_back(start_);
         }
-        std::vector<Node> Nodes;
-        std::vector<Node*> ToSearch;
-        const int Columns;
-        const int Rows;
         Node* node_at(const Pos& pos) {
-            int index = Rows * pos.col + pos.row;
-            if (index >= Nodes.size())
+            int index = _rows * pos.col + pos.row;
+            if (index >= _nodes.size())
                 return nullptr;
             else
-                return &Nodes[index];
+                return &_nodes[index];
         }
         Node* lowest_cost_to_search() {
-            Node* current = ToSearch.front();
-            for (auto& node : ToSearch) {
+            Node* current = _to_search.front();
+            for (auto& node : _to_search) {
                 if (node->has_lower_cost_than(current)) {
                     current = node;
                 }
@@ -248,22 +257,15 @@ namespace {
         }
         void add_to_search(Node* node) {
             node->ToSearch = true;
-            ToSearch.push_back(node);
+            _to_search.push_back(node);
         }
-    private: 
-        void remove_from_search(Node* node) {
-            int i;
-            for (i = 0; i < ToSearch.size(); i++) {
-                if (node->pos == ToSearch[i]->pos) break;
-            }
-            std::swap(ToSearch[i], ToSearch.back());
-            ToSearch.pop_back();
-        }
-    public:
         void set_as_processed(Node* node) {
             node->Processed = true;
             node->ToSearch = false;
             remove_from_search(node);
+        }
+        bool has_nodes_to_search() {
+            return _to_search.size() > 0;
         }
     };
 }
@@ -275,7 +277,7 @@ void Pathfinder::a_star()
     start->H = start->distance_to(_finish);
 
     bool reached_finish = false;
-    while (grid.ToSearch.size() > 0 && !reached_finish) {
+    while (grid.has_nodes_to_search() && !reached_finish) {
         run_special_engine_loop();
 
         auto current = grid.lowest_cost_to_search();
