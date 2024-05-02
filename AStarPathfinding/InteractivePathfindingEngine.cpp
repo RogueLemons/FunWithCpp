@@ -284,7 +284,7 @@ void Pathfinder::a_star()
         grid.set_as_processed(current);
         set_color_at(current->pos, PROCESSED);
 
-        for (auto& neighbor_pos : walkable_neighbors(current->pos)) {
+        for (const auto& neighbor_pos : walkable_neighbors(current->pos)) {
             auto neighbor = grid.node_at(neighbor_pos);
             if (neighbor->Processed)
                 continue;
