@@ -7,3 +7,4 @@ Implementing code types and solving problems in C++. Includes:
 - In pure C, doubly linked list
 - Interactive A* pathfinding application
 - Property class for one-line getable but not setable public fields
+- A map with a vector for data management
